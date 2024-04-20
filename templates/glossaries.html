@@ -23,7 +23,13 @@
   </div>
     <div class="row">
 <div class="col">
-            hello
+    <h2>Contents of basefile1.txt:</h2>
+    <p>{{ file_contents }}</p>
+        <ul>
+            {% for item in file_contents %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
         </div>
     </div>
 </div>
