@@ -22,28 +22,28 @@
   </div>
     <div class="row">
 <div class="col">
-            <form action="/translate" method="post">
+            <form action="/" method="post">
                 <div class="mb-3">
                     <label for="text" class="form-label">Text to translate</label>
-                    <textarea class="form-control" id="text" name="text" rows="3"></textarea>
+                    <textarea class="form-control" id="text" name="text" rows="3">{{ text }}</textarea>
                 </div>
                 <div class="mb-3">
                     <label for="source" class="form-label">Source language</label>
-                    <select class="form-select" id="source" name="source">
-                        <option value="en">English</option>
-                        <option value="de">German</option>
-                        <option value="fr">French</option>
-                        <option value="es">Spanish</option>
-                    </select>
+                        <select class="form-select" id="source" name="source">
+                            <option value="en" {% if source_language == 'en' %}selected{% endif %}>English</option>
+                            <option value="de" {% if source_language == 'de' %}selected{% endif %}>German</option>
+                            <option value="fr" {% if source_language == 'fr' %}selected{% endif %}>French</option>
+                            <option value="es" {% if source_language == 'es' %}selected{% endif %}>Spanish</option>
+                        </select>
                 </div>
                 <div class="mb-3">
                     <label for="target" class="form-label">Target language</label>
-                    <select class="form-select" id="target" name="target">
-                        <option value="en">English</option>
-                        <option value="de">German</option>
-                        <option value="fr">French</option>
-                        <option value="es">Spanish</option>
-                    </select>
+                        <select class="form-select" id="target" name="target">
+                            <option value="en" {% if target_language == 'en' %}selected{% endif %}>English</option>
+                            <option value="de" {% if target_language == 'de' %}selected{% endif %}>German</option>
+                            <option value="fr" {% if target_language == 'fr' %}selected{% endif %}>French</option>
+                            <option value="es" {% if target_language == 'es' %}selected{% endif %}>Spanish</option>
+                        </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Translate</button>
             </form>

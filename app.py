@@ -15,7 +15,13 @@ def dictionary():
             '<a href="/" >Press here to go back to main menu</>')
 
 
-@app.route('/translate', methods=['POST'])
+@app.route('/glossary')
+def glossary():
+    return render_template('glossaries.html')
+    # return "Hello Glossary"
+
+
+@app.route('/', methods=['POST'])
 def translate():
     if request.method == 'POST':
         # Access form data
@@ -27,10 +33,16 @@ def translate():
         # Replace this with your translation logic
 
         # For demonstration, let's just return the form data
-        return f'Text: {text}, Source Language: {source_language}, Target Language: {target_language}'
+        # return f'Text: {text}, Source Language: {source_language}, Target Language: {target_language}'
+        return render_template('main_page.html',
+                               source_language=source_language,
+                               target_language=target_language,
+                               text=text)
     else:
-        # Handle other request methods (e.g., GET)
-        return 'Method Not Allowed', 405
+        return render_template('main_page.html',
+                               source_language="source_language",
+                               target_language="target_language",
+                               text="text")
 
 
 if __name__ == '__main__':
