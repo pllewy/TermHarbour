@@ -17,9 +17,20 @@ def dictionary():
 
 @app.route('/glossary')
 def glossary():
-    return render_template('glossaries.html')
-    # return "Hello Glossary"
+    with open('./database/basefile1.txt', 'r') as file:
+        # Read the file line by line
+        lines = file.readlines()
 
+        # Split the lines and remove any leading or trailing whitespace
+        lines = [line.strip() for line in lines]
+    return render_template('glossaries.html', file_contents=lines)
+
+@app.route('/upload')
+def upload_file():
+    return render_template('upload.html')
+
+    # return ('<div>Dictionary tab.</div>'
+            # '<a href="/" >Press here to go back to main menu</>')
 
 @app.route('/', methods=['POST'])
 def translate():
