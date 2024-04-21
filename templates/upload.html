@@ -55,13 +55,12 @@
     <div class="col">
       <h2>Upload File</h2>
       <div id="upload-form" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)" onclick="openFileInput()">
-        <div id="file-name">
-          <p id="file-name">Drag & drop files here</p>
+          <p id="file-name"></p>
+          <p>Drag & drop files here</p>
         <p>or</p>
           <p>Press to select files</p>
 {#        <label for="fileInput" class="btn btn-primary">Choose File</label>#}
         <input type="file" id="fileInput" name="file" onchange="fileSelected()">
-          </div>
       </div>
     </div>
   </div>
