@@ -16,7 +16,8 @@
   }
 
   #upload-form:hover {
-    border-color: #aaa;
+    border-color: #aaf;
+      {#background-color: aquamarine;#}
   }
 
   #fileInput {
@@ -36,7 +37,7 @@
     <div class="col">
       <h1>Term harbour - AI Translation assistant</h1>
       <p>Translate your text with the help of AI</p>
-      <p>TO JEST GLOSARIUSZ</p>
+      <p>TO JEST UPLOAD</p>
     </div>
   </div>
   <div class="row">
@@ -53,17 +54,24 @@
   <div class="row">
     <div class="col">
       <h2>Upload File</h2>
-      <div id="upload-form" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
-        <p id="file-name">Drag & drop files here</p>
+      <div id="upload-form" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)" onclick="openFileInput()">
+        <div id="file-name">
+          <p id="file-name">Drag & drop files here</p>
         <p>or</p>
-        <label for="fileInput" class="btn btn-primary">Choose File</label>
+          <p>Press to select files</p>
+{#        <label for="fileInput" class="btn btn-primary">Choose File</label>#}
         <input type="file" id="fileInput" name="file" onchange="fileSelected()">
+          </div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
+      function openFileInput() {
+    document.getElementById('fileInput').click();
+  }
+
   function dropHandler(event) {
     event.preventDefault();
     if (event.dataTransfer.items) {
@@ -91,6 +99,8 @@
     event.preventDefault();
     // Set style for the drop zone to indicate valid drop target
     event.target.style.background = '#e9ecef';
+    {#event.target.style.background = '#000000';#}
+
   }
 
   function fileSelected() {
