@@ -1,0 +1,17 @@
+#upload-form {
+    padding: 20px 20px 0px 20px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#upload-form:hover {
+    border-color: #aaf;
+      /*background-color: aquamarine;*/
+}
+
+
+#fileInput {
+    display: none;
+}

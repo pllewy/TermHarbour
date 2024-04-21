@@ -1,11 +1,19 @@
 from flask import Flask, render_template, request
+import os
 
 app = Flask(__name__)
 
-@app.route('/')
+
+@app.route('/', methods=['GET', 'POST'])
 def main_page():
-    x = [1, 2, 3, 4]
-    return render_template('main_page.html', x=x)
+    if request.method == 'POST':
+        text = request.form['text']
+        source_language = request.form['source']
+        target_language = request.form['target']
+        return render_template('main_page.html', x=[1, 2, 3, 4], text=text, source_language=source_language,
+                               target_language=target_language)
+    else:
+        return render_template('main_page.html', x=[1, 2, 3, 4], text="", source_language="", target_language="")
 
 
 @app.route('/dictionary')
@@ -24,35 +32,17 @@ def glossary():
         lines = [line.strip() for line in lines]
     return render_template('glossaries.html', file_contents=lines)
 
-@app.route('/upload')
+
+@app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-    return render_template('upload.html')
-
-    # return ('<div>Dictionary tab.</div>'
-            # '<a href="/" >Press here to go back to main menu</>')
-
-@app.route('/', methods=['POST'])
-def translate():
     if request.method == 'POST':
-        # Access form data
-        text = request.form['text']
-        source_language = request.form['source']
-        target_language = request.form['target']
-
-        # Process the form data (e.g., perform translation)
-        # Replace this with your translation logic
-
-        # For demonstration, let's just return the form data
-        # return f'Text: {text}, Source Language: {source_language}, Target Language: {target_language}'
-        return render_template('main_page.html',
-                               source_language=source_language,
-                               target_language=target_language,
-                               text=text)
-    else:
-        return render_template('main_page.html',
-                               source_language="source_language",
-                               target_language="target_language",
-                               text="text")
+        file = request.files['file']
+        if file.filename == '':
+            return 'No selected file', 400
+        save_path = os.path.join('.', 'database', file.filename)
+        file.save(save_path)
+        return 'File uploaded successfully', 200
+    return render_template('upload.html')
 
 
 if __name__ == '__main__':
