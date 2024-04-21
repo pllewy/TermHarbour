@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dd5f05fc-cc0c-4e9e-8d07-76896ed63717" name="Changes" comment="Init branch">
-      <change afterPath="$PROJECT_DIR$/static/upload.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/upload.js" afterDir="false" />
+    <list default="true" id="dd5f05fc-cc0c-4e9e-8d07-76896ed63717" name="Changes" comment="Finished basic upload. Clean and neat">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/upload.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/upload.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/upload.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/upload.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/upload.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/upload.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -77,23 +76,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Flask server.TermHarbour.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "upload",
-    "last_opened_file_path": "/home/lewy/telegram/TermHarbour",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Flask server.TermHarbour.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;upload&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/lewy/telegram/TermHarbour&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -138,7 +137,8 @@
       <updated>1713618636733</updated>
       <workItem from="1713618643458" duration="6884000" />
       <workItem from="1713696978432" duration="2173000" />
-      <workItem from="1713702005715" duration="3787000" />
+      <workItem from="1713702005715" duration="3925000" />
+      <workItem from="1713706221068" duration="1213000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit - base page layout&#10;- Main page&#10;- Dict temporary page&#10;- Translation form">
       <option name="closed" value="true" />
@@ -196,7 +196,23 @@
       <option name="project" value="LOCAL" />
       <updated>1713702547547</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Finished basic upload. Clean and neat">
+      <option name="closed" value="true" />
+      <created>1713705833313</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1713705833313</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Finished basic upload. Clean and neat">
+      <option name="closed" value="true" />
+      <created>1713705882596</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1713705882596</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,9 +236,10 @@
     <MESSAGE value="Initial upload-file branch commit" />
     <MESSAGE value="small changes" />
     <MESSAGE value="Init branch" />
-    <option name="LAST_COMMIT_MESSAGE" value="Init branch" />
+    <MESSAGE value="Finished basic upload. Clean and neat" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finished basic upload. Clean and neat" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/TermHarbour$TermHarbour.coverage" NAME="TermHarbour Coverage Results" MODIFIED="1713705715145" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TermHarbour$TermHarbour.coverage" NAME="TermHarbour Coverage Results" MODIFIED="1713707119780" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

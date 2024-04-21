@@ -27,15 +27,21 @@
     <div class="col">
       <h2>Upload File</h2>
       <div id="upload-form" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)" onclick="openFileInput()">
-          <p>Drag & drop files here</p>
-        <p>or</p>
-          <p>Press to select files</p>
-          <p></p>
+          <p>
+              Drag & drop files here <br>
+              or <br>
+              Click to select files
+          </p>
           <p id="file-name"></p>
+
         <input type="file" id="fileInput" name="file" onchange="fileSelected()">
       </div>
-        <button class="btn btn-primary mt-2" onclick="uploadFile()">Upload</button>
+        <div style="display: flex;
+        justify-content: center;
+        align-items: center;">
+            <button class="btn btn-primary mt-2" onclick="uploadFile()">Upload</button>
       </div>
+        </div>
     </div>
 </div>
 

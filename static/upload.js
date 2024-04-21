@@ -1,4 +1,3 @@
-
   function openFileInput() {
     document.getElementById('fileInput').click();
   }
