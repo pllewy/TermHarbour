@@ -5,30 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Term harbour - AI Translation assistant</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-<style>
-  #upload-form {
-    padding: 20px;
-    border: 2px dashed #ccc;
-    border-radius: 10px;
-    text-align: center;
-    cursor: pointer;
-  }
-
-  #upload-form:hover {
-    border-color: #aaf;
-      {#background-color: aquamarine;#}
-  }
-
-  #fileInput {
-    display: none;
-  }
-</style>
-
+<link rel="stylesheet" type="text/css" href="../static/upload.css"> <!-- Local CSS -->
 </head>
 
 <body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+{# Private scripts file#}
+<script src="../static/upload.js"></script>
 
 {% include 'navbar.html' %}
 
@@ -37,85 +21,23 @@
     <div class="col">
       <h1>Term harbour - AI Translation assistant</h1>
       <p>Translate your text with the help of AI</p>
-      <p>TO JEST UPLOAD</p>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <h2>Contents of basefile1.txt:</h2>
-      <p>{{ file_contents }}</p>
-      <ul>
-        {% for item in file_contents %}
-          <li>{{ item }}</li>
-        {% endfor %}
-      </ul>
     </div>
   </div>
   <div class="row">
     <div class="col">
       <h2>Upload File</h2>
       <div id="upload-form" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)" onclick="openFileInput()">
-          <p id="file-name"></p>
           <p>Drag & drop files here</p>
         <p>or</p>
           <p>Press to select files</p>
-
-
-{#        <label for="fileInput" class="btn btn-primary">Choose File</label>#}
+          <p></p>
+          <p id="file-name"></p>
         <input type="file" id="fileInput" name="file" onchange="fileSelected()">
       </div>
+        <button class="btn btn-primary mt-2" onclick="uploadFile()">Upload</button>
+      </div>
     </div>
-  </div>
 </div>
-
-<script>
-      function openFileInput() {
-    document.getElementById('fileInput').click();
-  }
-
-  function dropHandler(event) {
-    event.preventDefault();
-    if (event.dataTransfer.items) {
-      // Use DataTransferItemList interface to access the file(s)
-      for (let i = 0; i < event.dataTransfer.items.length; i++) {
-        // If dropped items aren't files, reject them
-        if (event.dataTransfer.items[i].kind === 'file') {
-          const file = event.dataTransfer.items[i].getAsFile();
-          console.log('File', file);
-          // Handle file upload here
-          displayFileName(file.name);
-        }
-      }
-    } else {
-      // Use DataTransfer interface to access the file(s)
-      for (let i = 0; i < event.dataTransfer.files.length; i++) {
-        console.log('File', event.dataTransfer.files[i]);
-        // Handle file upload here
-        displayFileName(event.dataTransfer.files[i].name);
-      }
-    }
-  }
-
-  function dragOverHandler(event) {
-    event.preventDefault();
-    // Set style for the drop zone to indicate valid drop target
-    event.target.style.background = '#e9ecef';
-    {#event.target.style.background = '#000000';#}
-
-  }
-
-  function fileSelected() {
-    const fileInput = document.getElementById('fileInput');
-    const file = fileInput.files[0];
-    console.log('File', file);
-    // Handle file upload here
-    displayFileName(file.name);
-  }
-
-  function displayFileName(fileName) {
-    document.getElementById('file-name').textContent = 'Selected file: ' + fileName;
-  }
-</script>
 
 </body>
 </html>
