@@ -24,13 +24,35 @@ def dictionary():
 
 @app.route('/glossary')
 def glossary():
-    with open('./database/basefile1.txt', 'r') as file:
-        # Read the file line by line
-        lines = file.readlines()
+    file_contents = []
 
-        # Split the lines and remove any leading or trailing whitespace
-        lines = [line.strip() for line in lines]
-    return render_template('glossaries.html', file_contents=lines)
+    database_dir = './database'
+
+    # Iterate over all files in the database directory
+    for filename in os.listdir(database_dir):
+        # Check if the file is a regular file
+        if os.path.isfile(os.path.join(database_dir, filename)):
+            with open(os.path.join(database_dir, filename), 'r') as file:
+                # Read the file line by line
+                lines = file.readlines()
+
+                # Split the lines and remove any leading or trailing whitespace
+                lines = [line.strip() for line in lines]
+
+                # Append the file contents to the list
+                file_contents.append((filename, lines))
+
+    return render_template('glossaries.html', file_contents=file_contents)
+
+# @app.route('/glossary')
+# def glossary():
+#     with open('./database/basefile1.txt', 'r') as file:
+#         # Read the file line by line
+#         lines = file.readlines()
+#
+#         # Split the lines and remove any leading or trailing whitespace
+#         lines = [line.strip() for line in lines]
+#     return render_template('glossaries.html', file_contents=lines)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
