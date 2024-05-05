@@ -67,7 +67,9 @@ def upload_file():
         save_path = os.path.join('.', 'database', file.filename)
         file.save(save_path)
         return 'File uploaded successfully', 200
-    return render_template('upload.html')
+
+    glossary_files = os.listdir('./glossaries')
+    return render_template('upload.html', glossary_files=glossary_files)
 
 
 
