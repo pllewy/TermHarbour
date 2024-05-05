@@ -9,13 +9,13 @@ function uploadFile() {
     const formData = new FormData();
     formData.append("file", file);
 
-    fetch("/test", {
+    fetch("/upload", {
       method: "POST",
       body: formData,
     })
       .then((response) => {
         if (response.ok) {
-          console.log("File uploaded xsaxxsa successfully");
+          console.log("File uploaded successfully");
           return response.json();
           // Optionally, display a success message to the user
         } else {

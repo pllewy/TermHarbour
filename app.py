@@ -28,7 +28,7 @@ def dictionary():
 def glossary():
     file_contents = []
 
-    database_dir = './database'
+    database_dir = './glossaries'
 
     # Iterate over all files in the database directory
     for filename in os.listdir(database_dir):
@@ -47,59 +47,14 @@ def glossary():
     return render_template('glossaries.html', file_contents=file_contents)
 
 
-# @app.route('/glossary')
-# def glossary():
-#     with open('./database/basefile1.txt', 'r') as file:
-#         # Read the file line by line
-#         lines = file.readlines()
-#
-#         # Split the lines and remove any leading or trailing whitespace
-#         lines = [line.strip() for line in lines]
-#     return render_template('glossaries.html', file_contents=lines)
-
-
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
         if file.filename == '':
             return 'No selected file', 400
-        save_path = os.path.join('.', 'database', file.filename)
-        file.save(save_path)
-        return 'File uploaded successfully', 200
-
-    glossary_files = os.listdir('./glossaries')
-    return render_template('upload.html', glossary_files=glossary_files)
-
-
-
-
-@app.route('/test_2', methods=['GET', 'POST'])
-def upload_test_file():
-
-    if request.method == 'POST':
-        file = request.files['file']
-
-        if file.filename == '':
-            return 'No selected file', 400
-        save_path = os.path.join('.', 'database', file.filename)
-        file.save(save_path)
-
-        return 'File uploaded successfully', 200
-
-    return render_template('test_2.html', terms={"Termy": "Tu są termy"})
-
-
-@app.route('/test', methods=['GET', 'POST'])
-def test_file():
-    if request.method == 'POST':
-        file = request.files['file']
-        if file.filename == '':
-            return 'No selected file', 400
         save_path = os.path.join('.', 'input_files', file.filename)
         file.save(save_path)
-
-        # print("DONE")
 
         file_path = save_path
         source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
@@ -109,7 +64,6 @@ def test_file():
 
         extracted_terms = extract_and_translate_terms_with_patterns(text, source_lang, target_lang)
         terms = post_process_terms(extracted_terms)
-        # print("Extracted Terms:", terms)
 
         terms_dict = {}
         terms_labels = ['content','Medicine', 'Sports', 'Technology']
@@ -119,14 +73,8 @@ def test_file():
 
         terms_dict[terms_labels[0]] = terms
 
-        add_to_page = {'content': ['xd dodany element', 'drugi dodany element z POST app.route /test']}
         return terms_dict, 200
-    else:
-
-        # print(terms_dict.keys())
-        terms_dict = {'Nothing here':"I said something"}
-        # print("Translated Terms:", translated_terms)
-    return render_template('test_2.html', terms=terms_dict)
+    return render_template('upload.html')
 
 
 if __name__ == '__main__':

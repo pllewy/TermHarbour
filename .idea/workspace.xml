@@ -5,14 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dd5f05fc-cc0c-4e9e-8d07-76896ed63717" name="Changes" comment="Glossary added accordion to show all database files contents">
-      <change afterPath="$PROJECT_DIR$/extraction_01.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/health.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/test.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/test_2.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/glossaries/medicine" beforeDir="false" afterPath="$PROJECT_DIR$/glossaries/medicine" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/glossaries/science and technology" beforeDir="false" afterPath="$PROJECT_DIR$/glossaries/science and technology" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/health.pdf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/static/upload.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/upload.js" afterDir="false" />
-
+      <change beforePath="$PROJECT_DIR$/templates/test.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/test_2.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/upload.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/upload.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,26 +81,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Flask server.TermHarbour.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;glossaries&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/lewy/telegram/TermHarbour/templates&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/usr/local/lib/node_modules/prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.prettier&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Flask server.TermHarbour.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/home/lewy/telegram/TermHarbour/templates",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "prettierjs.PrettierConfiguration.Package": "/usr/local/lib/node_modules/prettier",
+    "settings.editor.selected.configurable": "settings.javascript.prettier",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/templates" />
@@ -200,13 +199,13 @@
       <option name="project" value="LOCAL" />
       <updated>1713702135436</updated>
     </task>
-    <task id="LOCAL-00006" summary="Init branch">
+    <task id="LOCAL-00006" summary="Glossary added accordion to show all database files contents">
       <option name="closed" value="true" />
-      <created>1713702199024</created>
+      <created>1713730936849</created>
       <option name="number" value="00006" />
       <option name="presentableId" value="LOCAL-00006" />
       <option name="project" value="LOCAL" />
-      <updated>1713702199024</updated>
+      <updated>1713730936849</updated>
     </task>
     <task id="LOCAL-00007" summary="Init branch">
       <option name="closed" value="true" />
@@ -232,16 +231,7 @@
       <option name="project" value="LOCAL" />
       <updated>1713705882596</updated>
     </task>
-    <task id="LOCAL-00006" summary="Glossary added accordion to show all database files contents">
-      <option name="closed" value="true" />
-      <created>1713730936849</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1713730936849</updated>
-    </task>
     <option name="localTasksCounter" value="7" />
-
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -268,7 +258,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="Glossary added accordion to show all database files contents" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/TermHarbour$TermHarbour.coverage" NAME="TermHarbour Coverage Results" MODIFIED="1714919186412" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-
+    <SUITE FILE_PATH="coverage/TermHarbour$TermHarbour.coverage" NAME="TermHarbour Coverage Results" MODIFIED="1714925082620" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
