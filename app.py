@@ -54,7 +54,6 @@ def glossary():
 #         lines = [line.strip() for line in lines]
 #     return render_template('glossaries.html', file_contents=lines)
 
-
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -69,5 +68,24 @@ def upload_file():
     return render_template('upload.html', glossary_files=glossary_files)
 
 
+from test import print_test
+from extraction_01 import read_text_from_file, extract_and_translate_terms_with_patterns
+
+@app.route('/test')
+def test():
+    file_path = 'health.pdf'
+    source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
+    target_lang = 'pl'  # input("Enter the target language (en, pl, es): ")
+
+    text = read_text_from_file(file_path)
+
+    glossary_files = os.listdir('./glossaries')
+
+    test_text = print_test()
+    extracted_terms = extract_and_translate_terms_with_patterns(text, source_lang, target_lang)
+
+    return render_template('test.html', glossary_files=glossary_files, test_text=extracted_terms)
+
 if __name__ == '__main__':
     app.run(debug=True)
+
