@@ -65,10 +65,19 @@ def upload_file():
         return 'File uploaded successfully', 200
 
     glossary_files = os.listdir('./glossaries')
-    return render_template('upload.html', glossary_files=glossary_files)
+
+    file_path = 'health.pdf'
+    source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
+    target_lang = 'pl'  # input("Enter the target language (en, pl, es): ")
+
+    text = read_text_from_file(file_path)
+
+    extracted_terms = extract_and_translate_terms_with_patterns(text, source_lang, target_lang)
 
 
-from test import print_test
+    return render_template('upload.html', glossary_files=glossary_files, test_text=extracted_terms)
+
+
 from extraction_01 import read_text_from_file, extract_and_translate_terms_with_patterns
 
 @app.route('/test')
@@ -81,7 +90,6 @@ def test():
 
     glossary_files = os.listdir('./glossaries')
 
-    test_text = print_test()
     extracted_terms = extract_and_translate_terms_with_patterns(text, source_lang, target_lang)
 
     return render_template('test.html', glossary_files=glossary_files, test_text=extracted_terms)

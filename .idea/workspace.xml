@@ -4,15 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dd5f05fc-cc0c-4e9e-8d07-76896ed63717" name="Changes" comment="Create new pull request">
-      <change afterPath="$PROJECT_DIR$/extraction_01.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/health.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sandbox/medical_dictionary.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/test.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+    <list default="true" id="dd5f05fc-cc0c-4e9e-8d07-76896ed63717" name="Changes" comment="Glossary added accordion to show all database files contents">
+      <change beforePath="$PROJECT_DIR$/.idea/TermHarbour.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/TermHarbour.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/upload.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/upload.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +24,6 @@
         <option value="HTML File" />
         <option value="CSS File" />
         <option value="JavaScript File" />
-        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -55,22 +52,12 @@
     &quot;assignee&quot;: &quot;pllewy&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/pllewy/TermHarbour.git&quot;,
-    &quot;accountId&quot;: &quot;bf359c22-e2a8-4856-8933-a7ebf06452cb&quot;
-  },
-  &quot;recentNewPullRequestHead&quot;: {
-    &quot;server&quot;: {
-      &quot;useHttp&quot;: false,
-      &quot;host&quot;: &quot;github.com&quot;,
-      &quot;port&quot;: null,
-      &quot;suffix&quot;: null
-    },
-    &quot;owner&quot;: &quot;pllewy&quot;,
-    &quot;repository&quot;: &quot;TermHarbour&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/pllewy/TermHarbour.git",
+    "accountId": "ed7c33bd-02e5-4b1c-85f3-b23fb3cb1aa7"
   }
-}</component>
+}]]></component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -83,32 +70,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Flask server.TermHarbour.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "integracja",
-    "last_opened_file_path": "C:/Users/Lewy/PycharmProjects/TermHarbour/templates",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Flask server.TermHarbour.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;integracja&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/lewy/telegram/TermHarbour/templates&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/usr/local/lib/node_modules/prettier&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.prettier&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Lewy\PycharmProjects\TermHarbour\templates" />
-      <recent name="C:\Users\Lewy\PycharmProjects\TermHarbour" />
-      <recent name="C:\Users\Lewy\PycharmProjects\TermHarbour\sandbox" />
+      <recent name="$PROJECT_DIR$/templates" />
+      <recent name="$PROJECT_DIR$/database" />
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Lewy\PycharmProjects\TermHarbour" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/static" />
       <recent name="$PROJECT_DIR$/templates" />
     </key>
@@ -122,10 +111,9 @@
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.10" />
+      <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -136,8 +124,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-PY-241.14494.241" />
-        <option value="bundled-python-sdk-0509580d9d50-28c9f5db9ffe-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.14494.241" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-PY-241.15989.155" />
+        <option value="bundled-python-sdk-babbdf50b680-7c6932dee5e4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.15989.155" />
       </set>
     </attachedChunks>
   </component>
@@ -151,11 +139,15 @@
       <updated>1713618636733</updated>
       <workItem from="1713618643458" duration="6884000" />
       <workItem from="1713696978432" duration="2173000" />
-      <workItem from="1713702005715" duration="3925000" />
-      <workItem from="1713706221068" duration="1213000" />
-      <workItem from="1714131328495" duration="34000" />
-      <workItem from="1714131414634" duration="2350000" />
-      <workItem from="1715333955281" duration="626000" />
+      <workItem from="1713702005715" duration="116000" />
+      <workItem from="1713710125616" duration="645000" />
+      <workItem from="1713729106633" duration="1771000" />
+      <workItem from="1713730895058" duration="1282000" />
+      <workItem from="1714895413501" duration="815000" />
+      <workItem from="1714897827795" duration="717000" />
+      <workItem from="1714898559083" duration="5524000" />
+      <workItem from="1714912646525" duration="7747000" />
+      <workItem from="1715587034790" duration="1152000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit - base page layout&#10;- Main page&#10;- Dict temporary page&#10;- Translation form">
       <option name="closed" value="true" />
@@ -197,13 +189,13 @@
       <option name="project" value="LOCAL" />
       <updated>1713702135436</updated>
     </task>
-    <task id="LOCAL-00006" summary="Init branch">
+    <task id="LOCAL-00006" summary="Glossary added accordion to show all database files contents">
       <option name="closed" value="true" />
-      <created>1713702199024</created>
+      <created>1713730936849</created>
       <option name="number" value="00006" />
       <option name="presentableId" value="LOCAL-00006" />
       <option name="project" value="LOCAL" />
-      <updated>1713702199024</updated>
+      <updated>1713730936849</updated>
     </task>
     <task id="LOCAL-00007" summary="Init branch">
       <option name="closed" value="true" />
@@ -229,15 +221,7 @@
       <option name="project" value="LOCAL" />
       <updated>1713705882596</updated>
     </task>
-    <task id="LOCAL-00010" summary="Create new pull request">
-      <option name="closed" value="true" />
-      <created>1714210986171</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1714210986171</updated>
-    </task>
-    <option name="localTasksCounter" value="11" />
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -257,14 +241,14 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit - base page layout&#10;- Main page&#10;- Dict temporary page&#10;- Translation form" />
     <MESSAGE value="Added:&#10;- Form saves chosen language options&#10;- Added basic glossaries.html tab with configured routes&#10;- Form returns requested data" />
-    <MESSAGE value="Initial upload-file branch commit" />
-    <MESSAGE value="small changes" />
-    <MESSAGE value="Init branch" />
-    <MESSAGE value="Finished basic upload. Clean and neat" />
     <MESSAGE value="Create new pull request" />
-    <option name="LAST_COMMIT_MESSAGE" value="Create new pull request" />
+    <MESSAGE value="Initial upload-file branch commit" />
+    <MESSAGE value="Starting glossary branch" />
+    <MESSAGE value="Glossary added accordion to show all database files contents" />
+    <option name="LAST_COMMIT_MESSAGE" value="Glossary added accordion to show all database files contents" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/TermHarbour$TermHarbour.coverage" NAME="TermHarbour Coverage Results" MODIFIED="1715333965996" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TermHarbour$TermHarbour.coverage" NAME="TermHarbour Coverage Results" MODIFIED="1715587445357" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TermHarbour$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1715347869065" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>
