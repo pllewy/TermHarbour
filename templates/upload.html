@@ -48,16 +48,17 @@
         <div class="col">
           <p>Select a glossary:</p>
 
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-              Choose Glossary
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              {% for file_name in glossary_files %}
-                <li><a class="dropdown-item" href="#">{{ file_name }}</a></li>
-              {% endfor %}
-            </ul>
-          </div>
+        <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+        Choose Glossary
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        {% for file_name in glossary_files %}
+        <li><a class="dropdown-item" href="#" onclick="setSelectedOption('{{ file_name }}')">{{ file_name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
         </div>
     </div>
                 <div class="row">

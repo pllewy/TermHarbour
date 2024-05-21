@@ -5,8 +5,15 @@ function openFileInput() {
 function uploadFile() {
   const fileInput = document.getElementById("fileInput");
   const file = fileInput.files[0];
+  const domain = document.getElementById('dropdownMenuButton').innerText;
+  const language = 'en'
+
   if (file) {
     const formData = new FormData();
+
+    formData.append("language", language)
+    formData.append("domain", domain)
+
     formData.append("file", file);
 
     fetch("/upload", {
@@ -81,3 +88,7 @@ function displayFileName(fileName) {
   document.getElementById("file-name").textContent =
     "Selected file: " + fileName;
 }
+
+    function setSelectedOption(option) {
+        document.getElementById('dropdownMenuButton').innerText = option;
+    }

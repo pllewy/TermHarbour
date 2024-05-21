@@ -51,9 +51,14 @@ def glossary():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
+        language = request.form['language']
+        domain = request.form['domain']
         file = request.files['file']
+
         if file.filename == '':
             return 'No selected file', 400
+        print(language, domain)
+
         save_path = os.path.join('.', 'input_files', file.filename)
         file.save(save_path)
 
@@ -76,7 +81,21 @@ def upload_file():
         terms_dict[terms_labels[0]] = terms
 
         return terms_dict, 200
-    return render_template('upload.html')
+
+    glossary_files = []
+
+    database_dir = './glossaries'
+
+    for filename in os.listdir(database_dir):
+        if os.path.isfile(os.path.join(database_dir, filename)):
+            with open(os.path.join(database_dir, filename), 'r') as file:
+
+                # Append the file contents to the list
+                glossary_files.append(filename)
+
+    file_contents = "Hello world"
+
+    return render_template('upload.html', file_contents=file_contents, glossary_files=glossary_files)
 
     file_path = 'health.pdf'
     source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
