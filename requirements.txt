@@ -1,0 +1,4 @@
+flask~=2.2.2
+spacy~=3.7.4
+pypdf2~=2.10.5
+translate~=3.6.1
