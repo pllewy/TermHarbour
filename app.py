@@ -47,6 +47,7 @@ def glossary():
     return render_template('glossaries.html', file_contents=file_contents)
 
 
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -55,6 +56,7 @@ def upload_file():
             return 'No selected file', 400
         save_path = os.path.join('.', 'input_files', file.filename)
         file.save(save_path)
+
 
         file_path = save_path
         source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
@@ -76,6 +78,34 @@ def upload_file():
         return terms_dict, 200
     return render_template('upload.html')
 
+    file_path = 'health.pdf'
+    source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
+    target_lang = 'pl'  # input("Enter the target language (en, pl, es): ")
+
+    text = read_text_from_file(file_path)
+
+    extracted_terms = extract_and_translate_terms_with_patterns(text, source_lang, target_lang)
+
+
+    return render_template('upload.html', glossary_files=glossary_files, test_text=extracted_terms)
+
+
+from extraction_01 import read_text_from_file, extract_and_translate_terms_with_patterns
+
+@app.route('/test')
+def test():
+    file_path = 'health.pdf'
+    source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
+    target_lang = 'pl'  # input("Enter the target language (en, pl, es): ")
+
+    text = read_text_from_file(file_path)
+
+    glossary_files = os.listdir('./glossaries')
+
+    extracted_terms = extract_and_translate_terms_with_patterns(text, source_lang, target_lang)
+
+    return render_template('test.html', glossary_files=glossary_files, test_text=extracted_terms)
 
 if __name__ == '__main__':
     app.run(debug=True)
+

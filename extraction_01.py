@@ -1,3 +1,4 @@
+
 from translate import Translator
 import spacy
 from spacy.matcher import Matcher
@@ -133,14 +134,3 @@ def post_process_terms(terms):
     terms = [term for term in terms if not re.match(r'^\d+[a-z]*$', term)]  # Ignore terms like "d4", "400th"
     
     return terms
-#
-# file_path = 'health.pdf'
-# source_lang = 'en' #input("Enter the source language (en, pl, es): ")
-# target_lang = 'pl' #input("Enter the target language (en, pl, es): ")
-#
-# text = read_text_from_file(file_path)
-#
-# extracted_terms = extract_and_translate_terms_with_patterns(text, source_lang, target_lang)
-# terms = post_process_terms(extracted_terms)
-# print("Extracted Terms:", terms)
-# #print("Translated Terms:", translated_terms)

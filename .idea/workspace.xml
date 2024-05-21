@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dd5f05fc-cc0c-4e9e-8d07-76896ed63717" name="Changes" comment="Glossary added accordion to show all database files contents">
+
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +38,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="glossaries" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -47,20 +49,12 @@
     &quot;assignee&quot;: &quot;pllewy&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">
-    <option name="recentNewPullRequestHead">
-      <RepoCoordinatesHolder>
-        <option name="owner" value="pllewy" />
-        <option name="repository" value="TermHarbour" />
-      </RepoCoordinatesHolder>
-    </option>
-    <option name="selectedUrlAndAccountId">
-      <UrlAndAccount>
-        <option name="accountId" value="6b99c778-baa3-4a72-a8d7-1f5cb60aa964" />
-        <option name="url" value="https://github.com/pllewy/TermHarbour.git" />
-      </UrlAndAccount>
-    </option>
-  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/pllewy/TermHarbour.git&quot;,
+    &quot;accountId&quot;: &quot;ed7c33bd-02e5-4b1c-85f3-b23fb3cb1aa7&quot;
+  }
+}</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -79,7 +73,9 @@
     &quot;Flask server.TermHarbour.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+
     &quot;last_opened_file_path&quot;: &quot;/home/lewy/telegram/TermHarbour/templates&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -115,9 +111,11 @@
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
+
       <option name="SDK_NAME" value="Python 3.11" />
+
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -128,7 +126,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-09665e90c3a7-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.15026.15" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-PY-241.15989.155" />
+        <option value="bundled-python-sdk-babbdf50b680-7c6932dee5e4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.15989.155" />
       </set>
     </attachedChunks>
   </component>
@@ -150,6 +149,7 @@
       <workItem from="1714897827795" duration="717000" />
       <workItem from="1714898559083" duration="5524000" />
       <workItem from="1714912646525" duration="7747000" />
+
     </task>
     <task id="LOCAL-00001" summary="Initial commit - base page layout&#10;- Main page&#10;- Dict temporary page&#10;- Translation form">
       <option name="closed" value="true" />
@@ -247,6 +247,7 @@
     <MESSAGE value="Initial upload-file branch commit" />
     <MESSAGE value="Starting glossary branch" />
     <MESSAGE value="Glossary added accordion to show all database files contents" />
+
     <MESSAGE value="No changes" />
     <option name="LAST_COMMIT_MESSAGE" value="No changes" />
   </component>
