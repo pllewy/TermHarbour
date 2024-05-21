@@ -16,12 +16,22 @@ function uploadFile() {
       .then((response) => {
         if (response.ok) {
           console.log("File uploaded successfully");
+          return response.json();
           // Optionally, display a success message to the user
         } else {
           console.error("Failed to upload file");
           // Optionally, display an error message to the user
         }
-      })
+      }).then((resp) => {
+        const content = resp.content;
+        console.log(content)
+
+      let text = "";
+for (let i = 0; i < content.length; i++) {
+  text += content[i] + "<br>";
+}
+      document.getElementById('added_content').innerHTML = text
+    })
       .catch((error) => {
         console.error("Error:", error);
         // Optionally, display an error message to the user

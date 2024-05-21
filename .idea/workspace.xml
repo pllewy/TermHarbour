@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dd5f05fc-cc0c-4e9e-8d07-76896ed63717" name="Changes" comment="Glossary added accordion to show all database files contents">
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +73,9 @@
     &quot;Flask server.TermHarbour.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;integracja&quot;,
+
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+
     &quot;last_opened_file_path&quot;: &quot;/home/lewy/telegram/TermHarbour/templates&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -107,6 +111,9 @@
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
+
+      <option name="SDK_NAME" value="Python 3.11" />
+
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -142,7 +149,7 @@
       <workItem from="1714897827795" duration="717000" />
       <workItem from="1714898559083" duration="5524000" />
       <workItem from="1714912646525" duration="7747000" />
-      <workItem from="1715587034790" duration="1152000" />
+
     </task>
     <task id="LOCAL-00001" summary="Initial commit - base page layout&#10;- Main page&#10;- Dict temporary page&#10;- Translation form">
       <option name="closed" value="true" />
@@ -240,11 +247,12 @@
     <MESSAGE value="Initial upload-file branch commit" />
     <MESSAGE value="Starting glossary branch" />
     <MESSAGE value="Glossary added accordion to show all database files contents" />
-    <option name="LAST_COMMIT_MESSAGE" value="Glossary added accordion to show all database files contents" />
+
+    <MESSAGE value="No changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="No changes" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/TermHarbour$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1716223892420" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/TermHarbour$app.coverage" NAME="app Coverage Results" MODIFIED="1715591422964" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/TermHarbour$TermHarbour.coverage" NAME="TermHarbour Coverage Results" MODIFIED="1716290788210" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TermHarbour$TermHarbour.coverage" NAME="TermHarbour Coverage Results" MODIFIED="1715590112495" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TermHarbour$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1715347869065" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>
