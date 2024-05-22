@@ -1,20 +1,24 @@
-function openFileInput() {
-  document.getElementById("fileInput").click();
+function openFileInput(elementId) {
+  document.getElementById(elementId).click();
 }
 
 function uploadFile() {
-  const fileInput = document.getElementById("fileInput");
-  const file = fileInput.files[0];
+  const source_fileInput = document.getElementById("fileInput");
+  const source_file = source_fileInput.files[0];
+
+  const target_fileInput = document.getElementById("targetFileInput");
+  const target_file = source_fileInput.files[0];
+
   const domain = document.getElementById('dropdownMenuButton').innerText;
   const language = 'en'
 
-  if (file) {
+  if (source_file) {
     const formData = new FormData();
 
     formData.append("language", language)
     formData.append("domain", domain)
 
-    formData.append("file", file);
+    formData.append("file", source_file);
 
     fetch("/upload", {
       method: "POST",
@@ -76,8 +80,8 @@ function dragOverHandler(event) {
   event.target.style.background = "#000000";
 }
 
-function fileSelected() {
-  const fileInput = document.getElementById("fileInput");
+function fileSelected(name) {
+  const fileInput = document.getElementById(name);
   const file = fileInput.files[0];
   console.log("File", file);
   // Handle file upload here

@@ -47,21 +47,19 @@ def glossary():
     return render_template('glossaries.html', file_contents=file_contents)
 
 
-
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         language = request.form['language']
         domain = request.form['domain']
-        file = request.files['file']
+        source_file = request.files['file']
 
-        if file.filename == '':
+        if source_file.filename == '':
             return 'No selected file', 400
         print(language, domain)
 
-        save_path = os.path.join('.', 'input_files', file.filename)
-        file.save(save_path)
-
+        save_path = os.path.join('.', 'input_files', source_file.filename)
+        source_file.save(save_path)
 
         file_path = save_path
         source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
@@ -73,12 +71,7 @@ def upload_file():
         terms = post_process_terms(extracted_terms)
 
         terms_dict = {}
-        terms_labels = ['content','Medicine', 'Sports', 'Technology']
-
-        for label in terms_labels:
-            terms_dict[label] = [""]
-
-        terms_dict[terms_labels[0]] = terms
+        terms_dict['content'] = terms
 
         return terms_dict, 200
 
@@ -89,7 +82,6 @@ def upload_file():
     for filename in os.listdir(database_dir):
         if os.path.isfile(os.path.join(database_dir, filename)):
             with open(os.path.join(database_dir, filename), 'r') as file:
-
                 # Append the file contents to the list
                 glossary_files.append(filename)
 
@@ -97,19 +89,9 @@ def upload_file():
 
     return render_template('upload.html', file_contents=file_contents, glossary_files=glossary_files)
 
-    file_path = 'health.pdf'
-    source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
-    target_lang = 'pl'  # input("Enter the target language (en, pl, es): ")
-
-    text = read_text_from_file(file_path)
-
-    extracted_terms = extract_and_translate_terms_with_patterns(text, source_lang, target_lang)
-
-
-    return render_template('upload.html', glossary_files=glossary_files, test_text=extracted_terms)
-
 
 from extraction_01 import read_text_from_file, extract_and_translate_terms_with_patterns
+
 
 @app.route('/test')
 def test():
@@ -125,6 +107,6 @@ def test():
 
     return render_template('test.html', glossary_files=glossary_files, test_text=extracted_terms)
 
+
 if __name__ == '__main__':
     app.run(debug=True)
-

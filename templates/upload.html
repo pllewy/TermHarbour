@@ -67,7 +67,7 @@
             id="upload-form"
             ondrop="dropHandler(event)"
             ondragover="dragOverHandler(event)"
-            onclick="openFileInput()"
+            onclick="openFileInput('fileInput')"
           >
             <p>
               Drag & drop files here <br />
@@ -80,7 +80,7 @@
               type="file"
               id="fileInput"
               name="file"
-              onchange="fileSelected()"
+              onchange="fileSelected('fileInput')"
             />
           </div>
           <div
@@ -94,11 +94,39 @@
 
     <div id="added_content"> TU JEST CONTENT</div>
 
-      </div>
+        <div class="col">
+          <div
+            id="upload-form"
+            ondrop="dropHandler(event)"
+            ondragover="dragOverHandler(event)"
+            onclick="openFileInput('targetFileInput')"
+          >
+            <p>
+              Drag & drop files here <br />
+              or <br />
+              Click to select files
+            </p>
+            <p id="file-name"></p>
 
-              <div>
-              {{ test_text }}
+            <input
+              type="file"
+              id="targetFileInput"
+              name="file"
+              onchange="fileSelected('targetFileInput')"
+            />
           </div>
+          <div
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <button class="btn btn-primary mt-2" onclick="uploadFile()">
+              Upload Target File
+            </button>
+          </div>
+        </div>
+
+    <div id="added_content"> TU JEST CONTENT</div>
+
+      </div>
     </div>
   </body>
 </html>
