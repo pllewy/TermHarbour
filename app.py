@@ -52,11 +52,10 @@ def upload_file():
         # STEP 1: Extract the data from the request
         language = request.form['language']
         domain = request.form['domain']
+        print(language, domain)
 
         save_path = save_file(request.files['file'])
         save_path_2 = save_file(request.files['target_file'])
-
-        print(language, domain)
 
         # STEP 2: Process the data
         file_path = save_path

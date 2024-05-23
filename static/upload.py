@@ -17,8 +17,6 @@ def get_glossary_names():
 
     for filename in os.listdir(database_dir):
         if os.path.isfile(os.path.join(database_dir, filename)):
-            with open(os.path.join(database_dir, filename), 'r') as file:
-                # Append the file contents to the list
-                glossary_files.append(filename)
+            glossary_files.append(filename)
 
     return glossary_files
