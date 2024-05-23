@@ -31,7 +31,9 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
           console.error("Failed to upload file");
           // Optionally, display an error message to the user
         }
-      }).then((resp) => {
+      })
+        // STĄD IDZIE DO PYTHONA, JEST PRZETWARZANE I WRACA Z POWROTEM
+        .then((resp) => {
       const source_terms = resp['source_terms'];
       const target_terms = resp['target_terms'];
       const alignments = resp['alignment'];

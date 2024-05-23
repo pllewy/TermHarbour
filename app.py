@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request
 import os
 
-from static.alignment import align
-from static.extraction_01 import read_text_from_file, extract_and_translate_terms_with_patterns, post_process_terms
+from static.alignment import align, align_sentences
+from static.extraction_01 import read_text_from_file, post_process_terms
 from static.upload import save_file, get_glossary_names
 from static.extraction_01 import read_text_from_file, post_process_terms, preprocess_text, load_spacy_model, extract_specialist_terms_with_patterns, combine_term_lists, extract_ner_terms
 
@@ -12,13 +12,21 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def main_page():
     if request.method == 'POST':
-        text = request.form['text']
-        source_language = request.form['source']
-        target_language = request.form['target']
-        return render_template('main_page.html', x=[1, 2, 3, 4], text=text, source_language=source_language,
-                               target_language=target_language)
+        source_text = request.form['source_text']
+        target_text = request.form['target_text']
+        source_language = request.form['source_language']
+        target_language = request.form['target_language']
+
+        print(source_text, target_text, source_language, target_language)
+        aligned = align_sentences(source_text, target_text, print_input=True, print_output=True)
+
+        return render_template('main_page.html',
+                               source_text=source_text, source_language=source_language,
+                               target_text=target_text, target_language=target_language)
     else:
-        return render_template('main_page.html', x=[1, 2, 3, 4], text="", source_language="", target_language="")
+        return render_template('main_page.html',
+                               source_text="", source_language="en",
+                               target_text="", target_language="es")
 
 
 @app.route('/dictionary')
