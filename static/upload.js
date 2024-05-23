@@ -1,14 +1,11 @@
-function openFileInput(elementId) {
-  document.getElementById(elementId).click();
-}
-
-function uploadFile() {
-  const source_fileInput = document.getElementById("fileInput");
+function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFileInput") {
+  const source_fileInput = document.getElementById(sourceElementId);
   const source_file = source_fileInput.files[0];
 
-  const target_fileInput = document.getElementById("targetFileInput");
-  const target_file = source_fileInput.files[0];
+  const target_fileInput = document.getElementById(targetElementId);
+  const target_file = target_fileInput.files[0];
 
+  console.log(source_file, target_file)
   const domain = document.getElementById('dropdownMenuButton').innerText;
   const language = 'en'
 
@@ -19,6 +16,7 @@ function uploadFile() {
     formData.append("domain", domain)
 
     formData.append("file", source_file);
+    formData.append("target_file", target_file);
 
     fetch("/upload", {
       method: "POST",
@@ -34,14 +32,24 @@ function uploadFile() {
           // Optionally, display an error message to the user
         }
       }).then((resp) => {
-        const content = resp.content;
-        console.log(content)
+      // resp.target_content = undefined;
+      const source_terms = resp['source_terms'];
+      const target_terms = resp['target_terms']
+      // const target_content = resp.target_content;
+      console.log( source_terms, target_terms)
 
       let text = "";
-for (let i = 0; i < content.length; i++) {
-  text += content[i] + "<br>";
-}
+      for (let i = 0; i < source_terms.length; i++) {
+        text += source_terms[i] + "<br>";
+      }
       document.getElementById('added_content').innerHTML = text
+
+      let text2 = "";
+      for (let i = 0; i < target_terms.length; i++) {
+        text2 += target_terms[i] + "<br>";
+      }
+      document.getElementById('added_content_2').innerHTML = text2
+
     })
       .catch((error) => {
         console.error("Error:", error);
@@ -49,50 +57,3 @@ for (let i = 0; i < content.length; i++) {
       });
   }
 }
-
-function dropHandler(event) {
-  event.preventDefault();
-  if (event.dataTransfer.items) {
-    // Use DataTransferItemList interface to access the file(s)
-    for (let i = 0; i < event.dataTransfer.items.length; i++) {
-      // If dropped items aren't files, reject them
-      if (event.dataTransfer.items[i].kind === "file") {
-        const file = event.dataTransfer.items[i].getAsFile();
-        console.log("File", file);
-        // Handle file upload here
-        displayFileName(file.name);
-      }
-    }
-  } else {
-    // Use DataTransfer interface to access the file(s)
-    for (let i = 0; i < event.dataTransfer.files.length; i++) {
-      console.log("File", event.dataTransfer.files[i]);
-      // Handle file upload here
-      displayFileName(event.dataTransfer.files[i].name);
-    }
-  }
-}
-
-function dragOverHandler(event) {
-  event.preventDefault();
-  // Set style for the drop zone to indicate valid drop target
-  event.target.style.background = "#e9ecef";
-  event.target.style.background = "#000000";
-}
-
-function fileSelected(name) {
-  const fileInput = document.getElementById(name);
-  const file = fileInput.files[0];
-  console.log("File", file);
-  // Handle file upload here
-  displayFileName(file.name);
-}
-
-function displayFileName(fileName) {
-  document.getElementById("file-name").textContent =
-    "Selected file: " + fileName;
-}
-
-    function setSelectedOption(option) {
-        document.getElementById('dropdownMenuButton').innerText = option;
-    }

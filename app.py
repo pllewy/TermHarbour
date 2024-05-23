@@ -50,31 +50,53 @@ def glossary():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
+        source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
+        target_lang = 'pl'  # input("Enter the target language (en, pl, es): ")
+
+        # STEP 1: Extract the data from the request
         language = request.form['language']
         domain = request.form['domain']
         source_file = request.files['file']
+        target_file = request.files['target_file']
 
         if source_file.filename == '':
-            return 'No selected file', 400
+            return 'No selected source file', 400
+
+        if target_file.filename == '':
+            return 'No selected target file', 400
+
         print(language, domain)
 
         save_path = os.path.join('.', 'input_files', source_file.filename)
         source_file.save(save_path)
 
+        save_path_2 = os.path.join('.', 'input_files', target_file.filename)
+        target_file.save(save_path_2)
+
+        # STEP 2: Process the data
         file_path = save_path
-        source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
-        target_lang = 'pl'  # input("Enter the target language (en, pl, es): ")
+        file_path_2 = save_path_2
 
         text = read_text_from_file(file_path)
 
         extracted_terms = extract_and_translate_terms_with_patterns(text, source_lang, target_lang)
         terms = post_process_terms(extracted_terms)
 
-        terms_dict = {}
-        terms_dict['content'] = terms
+        text2 = read_text_from_file(file_path_2)
+
+        extracted_terms2 = extract_and_translate_terms_with_patterns(text2, source_lang, target_lang)
+        terms2 = post_process_terms(extracted_terms2)
+
+        terms_dict = {
+            'source_terms': terms,
+            'target_terms': terms2
+        }
+
+        print(terms_dict)
 
         return terms_dict, 200
 
+    # If the request method is GET, return the upload page with the list of glossaries
     glossary_files = []
 
     database_dir = './glossaries'
@@ -85,9 +107,7 @@ def upload_file():
                 # Append the file contents to the list
                 glossary_files.append(filename)
 
-    file_contents = "Hello world"
-
-    return render_template('upload.html', file_contents=file_contents, glossary_files=glossary_files)
+    return render_template('upload.html', glossary_files=glossary_files)
 
 
 from extraction_01 import read_text_from_file, extract_and_translate_terms_with_patterns

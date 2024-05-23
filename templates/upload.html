@@ -10,8 +10,8 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" type="text/css" href="../static/upload.css" />
     <!-- Local CSS -->
+    <link rel="stylesheet" type="text/css" href="../static/upload.css" />
   </head>
 
   <body>
@@ -21,112 +21,46 @@
       crossorigin="anonymous"
     ></script>
 
-    {# Private scripts file#}
+    <!-- Local JS -->
     <script src="../static/upload.js"></script>
-
+    <script src="../static/upload_select_file.js"></script>
     {% include 'navbar.html' %}
 
     <div class="container">
-      <div class="row">
-        <div class="col">
-          <h1>Term harbour - AI Translation assistant</h1>
-          <p>Translate your text with the help of AI</p>
-        </div>
-      </div>
-
-
-      <div class="row">
-        <div class="col">
-          <h2>Upload File</h2>
-
-        </div>
-      </div>
-
-
-
+        {#    Page Title#}
         <div class="row">
-        <div class="col">
-          <p>Select a glossary:</p>
-
-        <div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-        Choose Glossary
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        {% for file_name in glossary_files %}
-        <li><a class="dropdown-item" href="#" onclick="setSelectedOption('{{ file_name }}')">{{ file_name }}</a></li>
-        {% endfor %}
-    </ul>
-</div>
-
-        </div>
-    </div>
-                <div class="row">
-        <div class="col">
-          <div
-            id="upload-form"
-            ondrop="dropHandler(event)"
-            ondragover="dragOverHandler(event)"
-            onclick="openFileInput('fileInput')"
-          >
-            <p>
-              Drag & drop files here <br />
-              or <br />
-              Click to select files
-            </p>
-            <p id="file-name"></p>
-
-            <input
-              type="file"
-              id="fileInput"
-              name="file"
-              onchange="fileSelected('fileInput')"
-            />
-          </div>
-          <div
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <button class="btn btn-primary mt-2" onclick="uploadFile()">
-              Upload
-            </button>
-          </div>
+            <div class="col">
+                <h1>Term harbour - AI Translation assistant</h1>
+                <p>Translate your text with the help of AI</p>
+            </div>
         </div>
 
-    <div id="added_content"> TU JEST CONTENT</div>
-
-        <div class="col">
-          <div
-            id="upload-form"
-            ondrop="dropHandler(event)"
-            ondragover="dragOverHandler(event)"
-            onclick="openFileInput('targetFileInput')"
-          >
-            <p>
-              Drag & drop files here <br />
-              or <br />
-              Click to select files
-            </p>
-            <p id="file-name"></p>
-
-            <input
-              type="file"
-              id="targetFileInput"
-              name="file"
-              onchange="fileSelected('targetFileInput')"
-            />
-          </div>
-          <div
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <button class="btn btn-primary mt-2" onclick="uploadFile()">
-              Upload Target File
-            </button>
-          </div>
+        {#    Pager subtitle#}
+        <div class="row">
+            <div class="col">
+                <h2>Upload File</h2>
+            </div>
         </div>
 
-    <div id="added_content"> TU JEST CONTENT</div>
+        {#    File upload form#}
+        <div class="row">
+            <div class="col">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        Choose Glossary
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for file_name in glossary_files %}
+                            <li><a class="dropdown-item" href="#" onclick="setSelectedOption('{{ file_name }}', 'dropdownMenuButton')">{{ file_name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-      </div>
+        {#    File upload form#}
+        {% include 'upload_select_file.html' %}
+
     </div>
   </body>
 </html>
