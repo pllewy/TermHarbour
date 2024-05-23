@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import os
 
-from extraction_01 import read_text_from_file, extract_and_translate_terms_with_patterns, post_process_terms
+from extraction_01 import read_text_from_file, post_process_terms, preprocess_text, load_spacy_model, extract_specialist_terms_with_patterns, combine_term_lists, extract_ner_terms
 
 app = Flask(__name__)
 
@@ -65,13 +65,16 @@ def upload_file():
         source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
         target_lang = 'pl'  # input("Enter the target language (en, pl, es): ")
 
+        nlp = load_spacy_model(source_lang)
         text = read_text_from_file(file_path)
-
-        extracted_terms = extract_and_translate_terms_with_patterns(text, source_lang, target_lang)
-        terms = post_process_terms(extracted_terms)
+        text_preprocessed = preprocess_text(text)
+        terms_ner = extract_ner_terms(text, nlp)
+        terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
+        post_process_terms(terms_pattern)
+        final_terms = combine_term_lists(terms_pattern, terms_ner)
 
         terms_dict = {}
-        terms_dict['content'] = terms
+        terms_dict['content'] = final_terms
 
         return terms_dict, 200
 
@@ -90,22 +93,25 @@ def upload_file():
     return render_template('upload.html', file_contents=file_contents, glossary_files=glossary_files)
 
 
-from extraction_01 import read_text_from_file, extract_and_translate_terms_with_patterns
-
-
 @app.route('/test')
 def test():
+    
     file_path = 'health.pdf'
     source_lang = 'en'  # input("Enter the source language (en, pl, es): ")
     target_lang = 'pl'  # input("Enter the target language (en, pl, es): ")
-
+    
+    nlp = load_spacy_model(source_lang)
     text = read_text_from_file(file_path)
+    text = read_text_from_file(file_path)
+    text_preprocessed = preprocess_text(text)
+    terms_ner = extract_ner_terms(text, nlp)
+    terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
+    post_process_terms(terms_pattern)
+    final_terms = combine_term_lists(terms_pattern, terms_ner)
 
     glossary_files = os.listdir('./glossaries')
 
-    extracted_terms = extract_and_translate_terms_with_patterns(text, source_lang, target_lang)
-
-    return render_template('test.html', glossary_files=glossary_files, test_text=extracted_terms)
+    return render_template('test.html', glossary_files=glossary_files, test_text=final_terms)
 
 
 if __name__ == '__main__':
