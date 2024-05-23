@@ -32,24 +32,36 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
           // Optionally, display an error message to the user
         }
       }).then((resp) => {
-      // resp.target_content = undefined;
       const source_terms = resp['source_terms'];
-      const target_terms = resp['target_terms']
+      const target_terms = resp['target_terms'];
+      const alignments = resp['alignment'];
+
       // const target_content = resp.target_content;
-      console.log( source_terms, target_terms)
+      console.log( source_terms, target_terms, alignments)
 
       let text = "";
       for (let i = 0; i < source_terms.length; i++) {
         text += source_terms[i] + "<br>";
       }
-      document.getElementById('added_content').innerHTML = text
 
       let text2 = "";
       for (let i = 0; i < target_terms.length; i++) {
         text2 += target_terms[i] + "<br>";
       }
+
+      text = "";
+      text2 = "";
+      let text3 = "";
+      for (let i = 0; i < alignments.length; i++) {
+        text += alignments[i][0] + "<br>";
+        text2 += alignments[i][1] + "<br>";
+        text3 += alignments[i][0] + "     " + alignments[i][1] + "<br>";
+      }
+
+      document.getElementById('added_content').innerHTML = text
       document.getElementById('added_content_2').innerHTML = text2
 
+      document.getElementById('alignment_content').innerHTML = text3
     })
       .catch((error) => {
         console.error("Error:", error);
