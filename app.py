@@ -9,6 +9,7 @@ from static.extraction_01 import read_text_from_file, post_process_terms, prepro
 app = Flask(__name__)
 
 
+
 @app.route('/', methods=['GET', 'POST'])
 def main_page():
     if request.method == 'POST':
