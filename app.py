@@ -6,7 +6,7 @@ from static.alignment import align, align_sentences
 from static.upload import save_file, get_glossary_names
 from static.extraction_01 import (read_text_from_file, post_process_terms, preprocess_text, load_spacy_model,
                                   extract_specialist_terms_with_patterns,  combine_term_lists, extract_ner_terms)
-from static.classification import text_categorization
+# from static.classification import text_categorization
 import os
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning, module='huggingface_hub')
