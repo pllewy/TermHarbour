@@ -1,12 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
 from static.alignment import align, align_sentences
 from static.upload import save_file, get_glossary_names
 from static.extraction_01 import (read_text_from_file, post_process_terms, preprocess_text, load_spacy_model,
-                                  extract_specialist_terms_with_patterns, combine_term_lists, extract_ner_terms)
+                                  extract_specialist_terms_with_patterns,  combine_term_lists, extract_ner_terms)
 from static.classification import text_categorization
 import os
 import warnings
@@ -95,20 +94,24 @@ def upload_file():
         text_preprocessed = preprocess_text(text)
         terms_ner = extract_ner_terms(text, nlp)
         terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
-        post_process_terms(terms_pattern)
+        terms_pattern = post_process_terms(terms_pattern)
         final_terms = combine_term_lists(terms_pattern, terms_ner)
 
-        text2 = read_text_from_file(file_path_2)
 
-        extracted_terms2 = extract_specialist_terms_with_patterns(text2, source_lang, target_lang)
-        terms2 = post_process_terms(extracted_terms2)
+        nlp_2 = load_spacy_model(target_lang)
+        text2 = read_text_from_file(file_path_2)
+        text_preprocessed_2 = preprocess_text(text2)
+        terms_ner_2 = extract_ner_terms(text2, nlp)
+        terms_pattern_2 = extract_specialist_terms_with_patterns(text_preprocessed_2, nlp_2)
+        terms_pattern_2 = post_process_terms(terms_pattern_2)
+        final_terms_2 = combine_term_lists(terms_pattern_2, terms_ner_2)
 
         # STEP 3: Align the terms
-        alignment = align(final_terms, terms2)
+        alignment = align(final_terms, final_terms_2)
 
         terms_dict = {
             'source_terms': final_terms,
-            'target_terms': terms2,
+            'target_terms': final_terms_2,
             'alignment': alignment
         }
 
@@ -118,7 +121,6 @@ def upload_file():
     glossary_files = get_glossary_names()
 
     return render_template('upload.html', glossary_files=glossary_files)
-
 
 class Glossary(db.Model):
     __tablename__ = 'medicine'  # Default table
