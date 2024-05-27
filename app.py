@@ -1,12 +1,21 @@
-from flask import Flask, render_template, request
-import os
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import text
 
 from static.alignment import align, align_sentences
-from static.extraction_01 import read_text_from_file, post_process_terms
 from static.upload import save_file, get_glossary_names
-from static.extraction_01 import read_text_from_file, post_process_terms, preprocess_text, load_spacy_model, extract_specialist_terms_with_patterns, combine_term_lists, extract_ner_terms
+from static.extraction_01 import (read_text_from_file, post_process_terms, preprocess_text, load_spacy_model,
+                                  extract_specialist_terms_with_patterns,  combine_term_lists, extract_ner_terms)
+# from static.classification import text_categorization
+import os
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning, module='huggingface_hub')
 
 app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'glossary.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 
 
@@ -36,27 +45,27 @@ def dictionary():
             '<a href="/" >Press here to go back to main menu</>')
 
 
-@app.route('/glossary')
-def glossary():
-    file_contents = []
-
-    database_dir = './glossaries'
-
-    # Iterate over all files in the database directory
-    for filename in os.listdir(database_dir):
-        # Check if the file is a regular file
-        if os.path.isfile(os.path.join(database_dir, filename)) and filename.endswith('.txt'):
-            with open(os.path.join(database_dir, filename), 'r') as file:
-                # Read the file line by line
-                lines = file.readlines()
-
-                # Split the lines and remove any leading or trailing whitespace
-                lines = [line.strip() for line in lines]
-
-                # Append the file contents to the list
-                file_contents.append((filename, lines))
-
-    return render_template('glossaries.html', file_contents=file_contents)
+# @app.route('/glossary')
+# def glossary():
+#     file_contents = []
+#
+#     database_dir = './glossaries'
+#
+#     # Iterate over all files in the database directory
+#     for filename in os.listdir(database_dir):
+#         # Check if the file is a regular file
+#         if os.path.isfile(os.path.join(database_dir, filename)) and filename.endswith('.txt'):
+#             with open(os.path.join(database_dir, filename), 'r') as file:
+#                 # Read the file line by line
+#                 lines = file.readlines()
+#
+#                 # Split the lines and remove any leading or trailing whitespace
+#                 lines = [line.strip() for line in lines]
+#
+#                 # Append the file contents to the list
+#                 file_contents.append((filename, lines))
+#
+#     return render_template('glossaries.html', file_contents=file_contents)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -86,20 +95,24 @@ def upload_file():
         text_preprocessed = preprocess_text(text)
         terms_ner = extract_ner_terms(text, nlp)
         terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
-        post_process_terms(terms_pattern)
+        terms_pattern = post_process_terms(terms_pattern)
         final_terms = combine_term_lists(terms_pattern, terms_ner)
 
-        text2 = read_text_from_file(file_path_2)
 
-        extracted_terms2 = extract_and_translate_terms_with_patterns(text2, source_lang, target_lang)
-        terms2 = post_process_terms(extracted_terms2)
+        nlp_2 = load_spacy_model(target_lang)
+        text2 = read_text_from_file(file_path_2)
+        text_preprocessed_2 = preprocess_text(text2)
+        terms_ner_2 = extract_ner_terms(text2, nlp)
+        terms_pattern_2 = extract_specialist_terms_with_patterns(text_preprocessed_2, nlp_2)
+        terms_pattern_2 = post_process_terms(terms_pattern_2)
+        final_terms_2 = combine_term_lists(terms_pattern_2, terms_ner_2)
 
         # STEP 3: Align the terms
-        alignment = align(final_terms, terms2)
+        alignment = align(final_terms, final_terms_2)
 
         terms_dict = {
             'source_terms': final_terms,
-            'target_terms': terms2,
+            'target_terms': final_terms_2,
             'alignment': alignment
         }
 
@@ -109,6 +122,63 @@ def upload_file():
     glossary_files = get_glossary_names()
 
     return render_template('upload.html', glossary_files=glossary_files)
+
+class Glossary(db.Model):
+    __tablename__ = 'medicine'  # Default table
+
+    id = db.Column(db.Integer, primary_key=True)
+    english = db.Column(db.String(80), nullable=False)
+    spanish = db.Column(db.String(80), nullable=False)
+    polish = db.Column(db.String(80), nullable=False)
+
+
+@app.route('/glossary')
+def glossary():
+    table_name = request.args.get('table', 'medicine')
+    records = db.session.execute(text(f'SELECT * FROM {table_name}')).fetchall()
+    return render_template('glossary.html', records=records, table=table_name)
+
+
+@app.route('/add', methods=['POST'])
+def add_record():
+    table_name = request.form['table']
+    english = request.form['english']
+    spanish = request.form['spanish']
+    polish = request.form['polish']
+    db.session.execute(
+        text(f'INSERT INTO {table_name} (english, spanish, polish) VALUES (:english, :spanish, :polish)'),
+        {'english': english, 'spanish': spanish, 'polish': polish})
+    db.session.commit()
+    return redirect(url_for('glossary', table=table_name))
+
+
+@app.route('/edit/<int:id>', methods=['POST'])
+def edit_record(id):
+    table_name = request.form['table']
+    english = request.form['english']
+    spanish = request.form['spanish']
+    polish = request.form['polish']
+    db.session.execute(
+        text(f'UPDATE {table_name} SET english = :english, spanish = :spanish, polish = :polish WHERE id = :id'),
+        {'english': english, 'spanish': spanish, 'polish': polish, 'id': id})
+    db.session.commit()
+    return redirect(url_for('glossary', table=table_name))
+
+
+@app.route('/delete/<int:id>', methods=['POST'])
+def delete_record(id):
+    table_name = request.form['table']
+    db.session.execute(text(f'DELETE FROM {table_name} WHERE id = :id'), {'id': id})
+    db.session.commit()
+    return jsonify({'result': 'success'})
+
+
+@app.route('/initialize')
+def initialize():
+    with app.app_context():
+        db.create_all()
+        db.session.commit()
+    return "Database initialized!"
 
 
 if __name__ == '__main__':

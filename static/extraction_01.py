@@ -126,4 +126,4 @@ def post_process_terms(terms):
     terms = [term for term in terms if terms.count(term) > 1]  # Keep terms that appear more than once
     terms = [term for term in terms if not re.match(r'^\d+[a-z]*$', term)]  # Ignore terms like "d4", "400th"
 
-
+    return terms
