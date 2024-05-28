@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', function () {
-            const id = this.dataset.id;
+            const english = this.dataset.english;
             const table = document.getElementById('currentTable').value;
-            fetch(`/delete/${id}`, {
+            fetch(`/delete/${english}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -23,16 +23,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', function () {
-            const id = this.dataset.id;
+            const english = this.dataset.english;
             const row = this.closest('tr');
-            const english = row.children[0].innerText;
             const spanish = row.children[1].innerText;
             const polish = row.children[2].innerText;
+            const categories = row.children[3].innerText;
 
             if (this.innerText === 'Edit') {
                 row.children[0].innerHTML = `<input type="text" class="form-control" value="${english}">`;
                 row.children[1].innerHTML = `<input type="text" class="form-control" value="${spanish}">`;
                 row.children[2].innerHTML = `<input type="text" class="form-control" value="${polish}">`;
+                row.children[3].innerHTML = `<input type="text" class="form-control" value="${categories}">`;
                 this.innerText = 'Confirm';
                 this.classList.remove('btn-secondary');
                 this.classList.add('btn-success');
@@ -40,26 +41,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 const newEnglish = row.children[0].children[0].value;
                 const newSpanish = row.children[1].children[0].value;
                 const newPolish = row.children[2].children[0].value;
+                const newCategory = row.children[3].children[0].value;
                 const table = document.getElementById('currentTable').value;
 
-                fetch(`/edit/${id}`, {
+                fetch(`/edit/${english}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: `table=${table}&english=${newEnglish}&spanish=${newSpanish}&polish=${newPolish}`
+                    body: `table=${table}&new_english=${newEnglish}&spanish=${newSpanish}&polish=${newPolish}&categories=${newCategory}`
                 })
-                .then(response => {
-                    if (response.ok) {
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
                         row.children[0].innerText = newEnglish;
                         row.children[1].innerText = newSpanish;
                         row.children[2].innerText = newPolish;
+                        row.children[3].innerText = newCategory;
                         this.innerText = 'Edit';
                         this.classList.remove('btn-success');
                         this.classList.add('btn-secondary');
                         window.location.reload();
-                    } else {
-                        alert('Error updating record');
+                    } else if (data.result === 'error') {
+                        alert(data.message);
                     }
                 });
             }
@@ -82,19 +86,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const english = document.getElementById('english').value;
         const spanish = document.getElementById('spanish').value;
         const polish = document.getElementById('polish').value;
+        const categories = document.getElementById('categories').value;
 
         fetch(form.action, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: `table=${table}&english=${english}&spanish=${spanish}&polish=${polish}`
+            body: `table=${table}&english=${english}&spanish=${spanish}&polish=${polish}&categories=${categories}`
         })
-        .then(response => {
-            if (response.ok) {
+        .then(response => response.json())
+        .then(data => {
+            if (data.result === 'success') {
                 window.location.reload();
-            } else {
-                alert('Error adding record');
+            } else if (data.result === 'error') {
+                document.getElementById('errorMessage').innerText = data.message;
+                document.getElementById('errorMessage').style.display = 'block';
             }
         });
     });
@@ -153,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'english': return 1;
             case 'spanish': return 2;
             case 'polish': return 3;
+            case 'categories': return 4;
             default: return 1;
         }
     }
