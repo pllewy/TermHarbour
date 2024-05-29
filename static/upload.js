@@ -60,10 +60,10 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
         text3 += alignments[i][0] + "     " + alignments[i][1] + "<br>";
       }
 
-      document.getElementById('added_content').innerHTML = text
-      document.getElementById('added_content_2').innerHTML = text2
+      // document.getElementById('added_content').innerHTML = text
+      // document.getElementById('added_content_2').innerHTML = text2
 
-      document.getElementById('alignment_content').innerHTML = text3
+      document.getElementById('added_content').innerHTML = text3
     })
       .catch((error) => {
         console.error("Error:", error);
