@@ -137,6 +137,7 @@ def upload_file():
         file_path = save_path
         file_path_2 = save_path_2
 
+
         nlp = load_spacy_model(source_lang)
         text = read_text_from_file(file_path)
         text_preprocessed = preprocess_text(text)
