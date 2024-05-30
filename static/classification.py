@@ -16,20 +16,20 @@ def text_categorization(category, language, text):
     if category == 'medicine':
         if language == 'english':
             # learning input: https://github.com/sebischair/Medical-Abstracts-TC-Corpus
-            model = Lbl2Vec.load('C:/Users/Mauri/Desktop/main_repo/TermHarbour/models/Lbl2Vec/Lbl2Vec_med_simple_2')
+            model = Lbl2Vec.load('models/Lbl2Vec/Lbl2Vec_med_simple_2')
     elif category == 'art':
         if language == 'english':
             # learning input: https://www.kaggle.com/datasets/mannacharya/aeon-essays-dataset
-            model = Lbl2Vec.load('C:/Users/Mauri/Desktop/main_repo/TermHarbour/models/Lbl2Vec/Lbl2Vec_art_simple')
+            model = Lbl2Vec.load('models/Lbl2Vec/Lbl2Vec_art_simple')
     elif category == 'news':
         if language == 'english':
             # learning input: https://www.kaggle.com/datasets/sunilthite/text-document-classification-dataset
-            model = Lbl2Vec.load('C:/Users/Mauri/Desktop/main_repo/TermHarbour/models/Lbl2Vec/Lbl2Vec_broad_simple')
+            model = Lbl2Vec.load('models/Lbl2Vec/Lbl2Vec_broad_simple')
     elif category == "environment":
         if language == 'english':
             # learning input: https://www.kaggle.com/datasets/beridzeg45/guardian-environment-related-news
             model = Lbl2Vec.load(
-                'C:/Users/Mauri/Desktop/main_repo/TermHarbour/models/Lbl2Vec/Lbl2Vec_environment_simple')
+                'models/Lbl2Vec/Lbl2Vec_environment_simple')
 
     # print(model.predict_new_docs(documents=[text]))
     print(model.predict_new_docs(tagged_docs=[TaggedDocument(text.split(" "), ['0'])]).iloc[0])
