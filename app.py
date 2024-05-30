@@ -1,14 +1,14 @@
 import sqlite3
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
-from static.alignment import align, align_sentences
-from static.upload import save_file
-from static.extraction_01 import (read_text_from_file, post_process_terms, preprocess_text, load_spacy_model,
+from static.AI_modules.alignment import align, align_sentences
+from static.upload.upload import save_file
+from static.AI_modules.extraction_01 import (read_text_from_file, post_process_terms, preprocess_text, load_spacy_model,
                                   extract_specialist_terms_with_patterns,  combine_term_lists, extract_ner_terms)
-from static.classification import text_categorization
+from static.AI_modules.classification import text_categorization
 import os
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning, module='huggingface_hub')
@@ -31,73 +31,23 @@ class Glossary(db.Model):
 @app.route('/', methods=['GET', 'POST'])
 def main_page():
     if request.method == 'POST':
-        source_text = request.form['source_text']
-        target_text = request.form['target_text']
+        source_text = request.form['source_text'].split()
+        target_text = request.form['target_text'].split()
         source_language = request.form['source_language']
         target_language = request.form['target_language']
 
-        # ALIGN SENTENCES #
-        source_text_copy = source_text
-        target_text_copy = target_text
-        source_text = source_text.split()
-        target_text = target_text.split()
-
-        # print(source_text, target_text, source_language, target_language)
-        aligned = align_sentences(source_text, target_text, print_input=True, print_output=True)
-
-        found_color_hex = 'green'
-        # found_color_int = 20
+        aligned = align_sentences(source_text, target_text)
 
         for pair in aligned['mwmf']:
-            source_text[pair[0]] = f'<span style="color: {found_color_hex};">{source_text[pair[0]]}</span>'
-            target_text[pair[1]] = f'<span style="color: {found_color_hex};">{target_text[pair[1]]}</span>'
-            # found_color_int += 10 % 64
-            # found_color_hex = f'#60{found_color_int}40'
+            source_text[pair[0]] = f'<span style="color: green;">{source_text[pair[0]]}</span>'
+            target_text[pair[1]] = f'<span style="color: green;">{target_text[pair[1]]}</span>'
 
-        # TAG NOT ALIGNED TECHNICAL TERMS TODO #
+        source_terms = extract_terms(request.form['source_text'], source_language)
+        target_terms = extract_terms(request.form['target_text'], target_language)
 
-        source_lang = source_language
-        target_lang = target_language
+        tag_terms(source_terms, source_text)
+        tag_terms(target_terms, target_text)
 
-        nlp = load_spacy_model(source_lang)
-        text = source_text_copy
-        text_preprocessed = preprocess_text(text)
-        terms_ner = extract_ner_terms(text, nlp)
-        terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
-        terms_pattern = post_process_terms(terms_pattern)
-        final_terms = combine_term_lists(terms_pattern, terms_ner)
-
-        nlp_2 = load_spacy_model(target_lang)
-        text2 = target_text_copy
-        text_preprocessed_2 = preprocess_text(text2)
-        terms_ner_2 = extract_ner_terms(target_text_copy, nlp)
-        terms_pattern_2 = extract_specialist_terms_with_patterns(text_preprocessed_2, nlp_2)
-        terms_pattern_2 = post_process_terms(terms_pattern_2)
-        final_terms_2 = combine_term_lists(terms_pattern_2, terms_ner_2)
-
-        # TAG TECHNICAL TERMS #
-        source_tech_words = final_terms
-        source_count = 0
-        for word in source_tech_words:
-            if f'<span style="color: green;">{word}</span>' not in source_text:
-                source_text.insert(source_count, f'<span style="color: red;">{word}</span>')
-                source_count += 1
-        source_text.insert(source_count, f'<br>')
-
-        target_tech_words = final_terms_2
-        target_count = 0
-        for word in target_tech_words:
-            if f'<span style="color: green;">{word}</span>' not in target_text:
-                target_text.insert(target_count, f'<span style="color: red;">{word}</span>')
-                target_count += 1
-        target_text.insert(target_count, f'<br>')
-
-        print('languages: ', source_language, target_language)
-        print('texts: ', source_text, target_text)
-        print('source tech: ', source_tech_words)
-        print('target tech: ', target_tech_words)
-
-        # PACK AND SEND RESPONSE #
         response_dict = {
             'source_language': source_language,
             'source_text': source_text,
@@ -111,14 +61,26 @@ def main_page():
                                source_text="", source_language="en",
                                target_text="", target_language="es")
 
+# def extract_terms(text, lang):
+#     nlp = load_spacy_model(lang)
+#     text_preprocessed = preprocess_text(text)
+#     terms_ner = extract_ner_terms(text, nlp)
+#     terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
+#     terms_pattern = post_process_terms(terms_pattern)
+#     return combine_term_lists(terms_pattern, terms_ner)
+
+def tag_terms(terms, text):
+    for word in terms:
+        if f'<span style="color: green;">{word}</span>' not in text:
+            text.append(f'<span style="color: red;">{word}</span>')
+    text.append('<br>')
+
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         source_lang = 'english'
         target_lang = request.form.get('language')
-
-        # language = request.form['language']
         domain = request.form.get('domain')
         source_file = request.files['file']
         target_file = request.files.get('target_file')
@@ -129,46 +91,33 @@ def upload_file():
         if not target_file or target_file.filename == '':
             return jsonify({'error': 'No target file selected'}), 400
 
+        source_file_path = save_file(source_file)
+        target_file_path = save_file(target_file)
 
-        # TODO - remove saving files. Use in-memory files. Change upload.js to send file names as well
-        save_path = save_file(request.files['file'])
-        save_path_2 = save_file(request.files['target_file'])
+        source_text = read_text_from_file(source_file_path)
+        target_text = read_text_from_file(target_file_path)
 
-        file_path = save_path
-        file_path_2 = save_path_2
+        source_terms = extract_terms(source_text, source_lang)
+        target_terms = extract_terms(target_text, target_lang)
 
+        alignment = align(source_terms, target_terms)
 
-        nlp = load_spacy_model(source_lang)
-        text = read_text_from_file(file_path)
-        categories = text_categorization(domain, source_lang, text)
-        text_preprocessed = preprocess_text(text)
-        terms_ner = extract_ner_terms(text, nlp)
-        terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
-        terms_pattern = post_process_terms(terms_pattern)
-        final_terms = combine_term_lists(terms_pattern, terms_ner)
-
-        nlp_2 = load_spacy_model(target_lang)
-        text2 = read_text_from_file(file_path_2)
-        text_preprocessed_2 = preprocess_text(text2)
-        terms_ner_2 = extract_ner_terms(text2, nlp_2)
-        terms_pattern_2 = extract_specialist_terms_with_patterns(text_preprocessed_2, nlp_2)
-        terms_pattern_2 = post_process_terms(terms_pattern_2)
-        final_terms_2 = combine_term_lists(terms_pattern_2, terms_ner_2)
-
-        alignment = align(final_terms, final_terms_2)
-
-        # PACK AND SEND RESPONSE #
         terms_dict = {
             'alignment': alignment,
-            'categories': categories
+            'categories': text_categorization(domain, source_lang, source_text)
         }
 
         return terms_dict, 200
 
-    # If the request method is GET, return the upload page with the list of glossaries
-    # glossary_files = get_glossary_names()
-    # , glossary_files = glossary_files
     return render_template('upload.html')
+
+def extract_terms(text, lang):
+    nlp = load_spacy_model(lang)
+    text_preprocessed = preprocess_text(text)
+    terms_ner = extract_ner_terms(text, nlp)
+    terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
+    terms_pattern = post_process_terms(terms_pattern)
+    return combine_term_lists(terms_pattern, terms_ner)
 
 
 @app.route('/tables', methods=['GET'])

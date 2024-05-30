@@ -1,43 +1,65 @@
+/**
+ * This script handles the functionality of uploading and translating text.
+ * It includes a function for uploading and translating text.
+ */
+
+/**
+ * Function to upload a file and translate its content.
+ * @param {string} sourceElementId - The id of the HTML element containing the source file input. Default is "fileInput".
+ * @param {string} targetElementId - The id of the HTML element containing the target file input. Default is "targetFileInput".
+ */
 function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFileInput") {
+  // Get the source and target file inputs
   const source_fileInput = document.getElementById(sourceElementId);
   const source_file = source_fileInput.files[0];
 
   const target_fileInput = document.getElementById(targetElementId);
   const target_file = target_fileInput.files[0];
 
+  // Log the source and target files
   console.log(source_file, target_file)
+
+  // Get the domain and language from the HTML elements
   const domain = document.getElementById('dropdownMenuButton').innerText;
   const language = getSelectedLanguage();
 
-   if (domain === "Choose glossary") {
+  // If no domain is selected, alert the user and return
+  if (domain === "Choose glossary") {
         alert("Please choose a glossary before proceeding.");
         return;
     }
 
+  // If there is a source file, proceed with the upload and translation
   if (source_file) {
+    // Create a new FormData object
     const formData = new FormData();
 
+    // Append the language, domain, source file, and target file to the FormData object
     formData.append("language", 'english')
     formData.append("domain", domain)
-
     formData.append("file", source_file);
     formData.append("target_file", target_file);
 
+    // Show the loading spinner
     showLoadingSpinner();
 
-  fetch("/upload", {
+    // Send a POST request to the server with the FormData object
+    fetch("/upload", {
             method: "POST",
             body: formData,
         })
         .then(response => response.json())
         .then(resp => {
+            // Get the alignments and categories from the response
             const alignments = resp['alignment'];
             const categories = resp['categories'];
 
+            // Get the table body
             const tableBody = document.getElementById('translationsTableBody');
             tableBody.innerHTML = ''; // Clear existing rows
 
-         for (let i = 0; i < alignments.length; i++) {
+            // For each alignment, create a new row and append it to the table body
+            for (let i = 0; i < alignments.length; i++) {
                 const row = document.createElement('tr');
                 if (language === 'spanish') {
                     row.innerHTML = `
@@ -67,28 +89,44 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
             }
         })
       .catch((error) => {
+        // Log any errors
         console.error("Error:", error);
         // Optionally, display an error message to the user
       })
       .finally(() => {
+        // Hide the loading spinner
         hideLoadingSpinner();
       });
   }
 }
 
+/**
+ * Function to show the loading spinner.
+ */
 function showLoadingSpinner() {
   document.getElementById('loading-spinner').style.display = 'block';
 }
 
+/**
+ * Function to hide the loading spinner.
+ */
 function hideLoadingSpinner() {
   document.getElementById('loading-spinner').style.display = 'none';
 }
 
+/**
+ * Function to get the selected language from the dropdown.
+ * @returns {string} The selected language.
+ */
 function getSelectedLanguage() {
   const dropdown = document.getElementById('languageDropdown');
   return dropdown.value;
 }
 
+/**
+ * Event listener for DOMContentLoaded event.
+ * Fetches the table names from the server and appends them to the dropdown menu.
+ */
 document.addEventListener('DOMContentLoaded', (event) => {
     fetch('/tables')
         .then(response => response.json())
@@ -107,10 +145,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
         .catch(error => console.error('Error fetching table names:', error));
 });
 
+/**
+ * Function to set the selected option in the dropdown menu.
+ * @param {string} option - The selected option.
+ * @param {string} elementId - The id of the dropdown menu.
+ */
 function setSelectedOption(option, elementId) {
     document.getElementById(elementId).innerText = option;
 }
 
+/**
+ * Function to switch a row to editable mode or save the edited values.
+ * @param {HTMLElement} button - The button that was clicked.
+ */
 function editRow(button) {
     const row = button.closest('tr');
     const isEditing = button.textContent === 'Confirm';
@@ -142,12 +189,19 @@ function editRow(button) {
     }
 }
 
+/**
+ * Function to delete a row from the table.
+ * @param {HTMLElement} button - The button that was clicked.
+ */
 function deleteRow(button) {
     const row = button.closest('tr');
     row.remove();
 }
 
-
+/**
+ * Event listener for DOMContentLoaded event.
+ * Changes the text of the upload button to 'Get terms'.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const uploadButton = document.querySelector('button[onclick="uploadFile()"]');
     if (uploadButton) {
