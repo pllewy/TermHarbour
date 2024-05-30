@@ -56,6 +56,7 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
                         </td>
                     `;
                 }
+
                 tableBody.appendChild(row);
             }
         })
