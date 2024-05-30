@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
 from static.alignment import align, align_sentences
-from static.upload import save_file, get_glossary_names
+from static.upload import save_file
 from static.extraction_01 import (read_text_from_file, post_process_terms, preprocess_text, load_spacy_model,
                                   extract_specialist_terms_with_patterns,  combine_term_lists, extract_ner_terms)
 # from static.classification import text_categorization
@@ -130,6 +130,7 @@ def upload_file():
             return jsonify({'error': 'No target file selected'}), 400
 
 
+        # TODO - remove saving files. Use in-memory files. Change upload.js to send file names as well
         save_path = save_file(request.files['file'])
         save_path_2 = save_file(request.files['target_file'])
 
@@ -163,9 +164,9 @@ def upload_file():
         return terms_dict, 200
 
     # If the request method is GET, return the upload page with the list of glossaries
-    glossary_files = get_glossary_names()
-
-    return render_template('upload.html', glossary_files=glossary_files)
+    # glossary_files = get_glossary_names()
+    # , glossary_files = glossary_files
+    return render_template('upload.html')
 
 @app.route('/tables', methods=['GET'])
 def get_tables():

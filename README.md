@@ -5,7 +5,6 @@ This is a Flask application that provides several functionalities including text
 ## Features
 
 - Main Page: A page where users can input text, source language, and target language for processing.
-- Dictionary: A simple dictionary tab.
 - Glossary: A page that displays the contents of glossary files found in the `./glossaries` directory.
 - Upload: A page where users can upload a file for text extraction and translation. The extracted terms are then post-processed.
 - Test: A page for testing the extraction and translation of terms from a specific file.
@@ -35,6 +34,8 @@ WARNING: This will install big models for spaCy (~2 Gb).
 ## Usage
 
 Navigate to the main page at `http://localhost:5000/`. From there, you can access the other features of the application.
+
+In ./input_files there are sample files that can be used for testing the application.
 
 ## Contributing
 
