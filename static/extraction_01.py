@@ -10,11 +10,11 @@ from nltk import sent_tokenize
 
 def load_spacy_model(language_code):
     if language_code == 'en':
-        return spacy.load("en_core_web_md")
+        return spacy.load("en_core_web_lg")
     elif language_code == 'pl':
-        return spacy.load("pl_core_news_md")
+        return spacy.load("pl_core_news_lg")
     elif language_code == 'es':
-        return spacy.load("es_core_news_md")
+        return spacy.load("es_core_news_lg")
     else:
         raise ValueError("Unsupported language code")
 

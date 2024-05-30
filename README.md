@@ -13,13 +13,20 @@ This is a Flask application that provides several functionalities including text
 ## Setup
 
 1. Clone the repository.
-2. Install the required Python packages using pip:
+2. Install the required Python packages using setuptools. Run the following command in the terminal.\
+WARNING: This will install big models for spaCy (~2 Gb).
+
+   ```
+   ./setup.sh
+    ```
+    or
     ```
     pip install -r requirements.txt
-   python -m spacy download en_core_web_md
-   python -m spacy download es_core_web_md
-   python -m spacy download pl_core_web_md
-    ```
+   python -m spacy download en_core_web_lg
+   python -m spacy download es_core_news_lg
+   python -m spacy download pl_core_news_lg
+   ```
+
 3. Run the Flask application:
     ```
     python app.py
