@@ -8,6 +8,7 @@ from static.alignment import align, align_sentences
 from static.upload import save_file, get_glossary_names
 from static.extraction_01 import (read_text_from_file, post_process_terms, preprocess_text, load_spacy_model,
                                   extract_specialist_terms_with_patterns,  combine_term_lists, extract_ner_terms)
+from static.classification import text_categorization
 import os
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning, module='huggingface_hub')
@@ -55,11 +56,11 @@ def dictionary():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
-        source_lang = 'en'
+        source_lang = 'english'
         target_lang = request.form.get('language')
 
         # language = request.form['language']
-        # domain = request.form['domain']
+        domain = request.form.get('domain')
         source_file = request.files['file']
         target_file = request.files.get('target_file')
 
@@ -78,6 +79,7 @@ def upload_file():
 
         nlp = load_spacy_model(source_lang)
         text = read_text_from_file(file_path)
+        categories = text_categorization(domain, source_lang, text)
         text_preprocessed = preprocess_text(text)
         terms_ner = extract_ner_terms(text, nlp)
         terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
@@ -95,9 +97,8 @@ def upload_file():
         alignment = align(final_terms, final_terms_2)
 
         terms_dict = {
-            'source_terms': final_terms,
-            'target_terms': final_terms_2,
-            'alignment': alignment
+            'alignment': alignment,
+            'categories': categories
         }
 
         return terms_dict, 200
@@ -105,6 +106,7 @@ def upload_file():
     glossary_files = get_glossary_names()
 
     return render_template('upload.html', glossary_files=glossary_files)
+
 
 @app.route('/tables', methods=['GET'])
 def get_tables():
@@ -114,6 +116,20 @@ def get_tables():
     tables = cursor.fetchall()
     conn.close()
     return jsonify([table[0] for table in tables])
+
+
+@app.route('/categorize', methods=['POST'])
+def categorize_text():
+    data = request.json
+    category = data.get('category')
+    language = data.get('language')
+    text = data.get('text')
+
+    if not category or not language or not text:
+        return jsonify({'error': 'Invalid input'}), 400
+
+    categories = text_categorization(category, language, text)
+    return jsonify({'categories': categories})
 
 @app.route('/glossary')
 def glossary():

@@ -112,3 +112,18 @@
     background-color: #007bff; /* Highlight on hover */
     color: white; /* White text on hover */
 }
+
+table th, table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+table td.categories-column {
+    max-width: 150px; /* Adjust the width as needed */
+}
+
+table td.categories-column:hover {
+    white-space: normal; /* Show full text on hover */
+    overflow: visible;
+}

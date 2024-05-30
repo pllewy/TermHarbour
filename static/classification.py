@@ -14,19 +14,19 @@ def clean_text(file_path):
 
 def text_categorization(category, language, text):
     if category == 'medicine':
-        if language == 'en':
+        if language == 'english':
             # learning input: https://github.com/sebischair/Medical-Abstracts-TC-Corpus
             model = Lbl2Vec.load('C:/Users/Mauri/Desktop/main_repo/TermHarbour/models/Lbl2Vec/Lbl2Vec_med_simple_2')
     elif category == 'art':
-        if language == 'en':
+        if language == 'english':
             # learning input: https://www.kaggle.com/datasets/mannacharya/aeon-essays-dataset
             model = Lbl2Vec.load('C:/Users/Mauri/Desktop/main_repo/TermHarbour/models/Lbl2Vec/Lbl2Vec_art_simple')
     elif category == 'news':
-        if language == 'en':
+        if language == 'english':
             # learning input: https://www.kaggle.com/datasets/sunilthite/text-document-classification-dataset
             model = Lbl2Vec.load('C:/Users/Mauri/Desktop/main_repo/TermHarbour/models/Lbl2Vec/Lbl2Vec_broad_simple')
     elif category == "environment":
-        if language == 'en':
+        if language == 'english':
             # learning input: https://www.kaggle.com/datasets/beridzeg45/guardian-environment-related-news
             model = Lbl2Vec.load(
                 'C:/Users/Mauri/Desktop/main_repo/TermHarbour/models/Lbl2Vec/Lbl2Vec_environment_simple')
