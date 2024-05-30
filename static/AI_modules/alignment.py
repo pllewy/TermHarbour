@@ -51,6 +51,7 @@ def align_sentences(source_sentence, target_sentence, print_input=False, print_o
     Returns:
         dict: The full alignment dictionary.
     """
+
     # Initialize the sentence aligner
     aligner = SentenceAligner(model="bert", token_type="bpe", matching_methods="mai")
 
