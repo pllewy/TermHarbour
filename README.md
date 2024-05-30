@@ -16,6 +16,9 @@ This is a Flask application that provides several functionalities including text
 2. Install the required Python packages using pip:
     ```
     pip install -r requirements.txt
+   python -m spacy download en_core_web_md
+   python -m spacy download es_core_web_md
+   python -m spacy download pl_core_web_md
     ```
 3. Run the Flask application:
     ```

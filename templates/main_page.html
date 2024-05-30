@@ -10,6 +10,7 @@
 <body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
+<script src="../static/main_page.js"></script>
 
 {% include 'navbar.html' %}
 
@@ -22,46 +23,63 @@
   </div>
     <div class="row">
 <div class="col">
-            <form action="/" method="post">
-                <div class="mb-3">
-                    <label for="text" class="form-label">Text to translate</label>
-                    <textarea class="form-control" id="text" name="text" rows="3">{{ text }}</textarea>
-                </div>
-                            <div class="mb-3">
-                    <label for="text" class="form-label">Text to translate</label>
-                    <textarea class="form-control" id="text" name="text" rows="3">{{ text }}</textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="source" class="form-label">Source language</label>
-                        <select class="form-select" id="source" name="source">
-                            <option value="en" {% if source_language == 'en' %}selected{% endif %}>English</option>
-                            <option value="de" {% if source_language == 'de' %}selected{% endif %}>German</option>
-                            <option value="fr" {% if source_language == 'fr' %}selected{% endif %}>French</option>
-                            <option value="es" {% if source_language == 'es' %}selected{% endif %}>Spanish</option>
-                        </select>
-                </div>
-                <div class="mb-3">
-                    <label for="target" class="form-label">Target language</label>
-                        <select class="form-select" id="target" name="target">
-                            <option value="en" {% if target_language == 'en' %}selected{% endif %}>English</option>
-                            <option value="de" {% if target_language == 'de' %}selected{% endif %}>German</option>
-                            <option value="fr" {% if target_language == 'fr' %}selected{% endif %}>French</option>
-                            <option value="es" {% if target_language == 'es' %}selected{% endif %}>Spanish</option>
-                        </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Translate</button>
-            </form>
+{#<form action="/" method="post">#}
+    <div class="row">
+        <div class="col">
+            <div class="mb-3">
+                <label for="source_language" class="form-label">Source language</label>
+                <select class="form-select" id="source_language" name="source_language">
+                    <option value="en" {% if source_language == 'en' %}selected{% endif %}>English</option>
+                    <option value="pl" {% if source_language == 'pl' %}selected{% endif %}>Polish</option>
+                    <option value="es" {% if source_language == 'es' %}selected{% endif %}>Spanish</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="source_text" class="form-label">Text to translate</label>
+{#                <textarea class="form-control" id="source_text" name="source_text" rows="3">{{ text }}</textarea>#}
+            <div class="form-control" id="source_text" name="source_text" contenteditable="true"></div>
+    <style>
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            resize: vertical;
+            min-height: 250px; /* 3 rows high */
+            line-height: 20px; /* Typical line height */
+            overflow: auto;
+        }
+    </style>
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="target_language" class="form-label">Target language</label>
+                <select class="form-select" id="target_language" name="target_language">
+                    <option value="en" {% if target_language == 'en' %}selected{% endif %}>English</option>
+                    <option value="pl" {% if target_language == 'pl' %}selected{% endif %}>Polish</option>
+                    <option value="es" {% if target_language == 'es' %}selected{% endif %}>Spanish</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="target_text" class="form-label">Translated Text</label>
+                <div class="form-control" id="target_text" name="target_text" contenteditable="true">{{ translated_text }}</div>
+{#                <textarea class="form-control" id="target_text" name="target_text" rows="3">{{ translated_text }}</textarea>#}
+            </div>
+            <button onclick="uploadTranslate()" class="btn btn-primary">Translate</button>
+        </div>
+    </div>
+{#</form>#}
+
+
+
         </div>
     </div>
 </div>
 
-
-{#<!-- Iterate over x list and print its elements -->#}
-{#<ul>#}
-{#  {% for item in x %}#}
-{#    <li>{{ item }}</li>#}
-{#  {% endfor %}#}
-{#</ul>#}
 
 </body>
 </html>

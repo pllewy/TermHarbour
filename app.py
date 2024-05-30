@@ -8,6 +8,7 @@ from static.alignment import align, align_sentences
 from static.upload import save_file, get_glossary_names
 from static.extraction_01 import (read_text_from_file, post_process_terms, preprocess_text, load_spacy_model,
                                   extract_specialist_terms_with_patterns,  combine_term_lists, extract_ner_terms)
+# from static.classification import text_categorization
 import os
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning, module='huggingface_hub')
@@ -35,21 +36,80 @@ def main_page():
         source_language = request.form['source_language']
         target_language = request.form['target_language']
 
+        # ALIGN SENTENCES #
+        source_text_copy = source_text
+        target_text_copy = target_text
+        source_text = source_text.split()
+        target_text = target_text.split()
+
+        # print(source_text, target_text, source_language, target_language)
         aligned = align_sentences(source_text, target_text, print_input=True, print_output=True)
 
-        return render_template('main_page.html',
-                               source_text=source_text, source_language=source_language,
-                               target_text=target_text, target_language=target_language)
+        found_color_hex = 'green'
+        # found_color_int = 20
+
+        for pair in aligned['mwmf']:
+            source_text[pair[0]] = f'<span style="color: {found_color_hex};">{source_text[pair[0]]}</span>'
+            target_text[pair[1]] = f'<span style="color: {found_color_hex};">{target_text[pair[1]]}</span>'
+            # found_color_int += 10 % 64
+            # found_color_hex = f'#60{found_color_int}40'
+
+        # TAG NOT ALIGNED TECHNICAL TERMS TODO #
+
+        source_lang = source_language
+        target_lang = target_language
+
+        nlp = load_spacy_model(source_lang)
+        text = source_text_copy
+        text_preprocessed = preprocess_text(text)
+        terms_ner = extract_ner_terms(text, nlp)
+        terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
+        terms_pattern = post_process_terms(terms_pattern)
+        final_terms = combine_term_lists(terms_pattern, terms_ner)
+
+        nlp_2 = load_spacy_model(target_lang)
+        text2 = target_text_copy
+        text_preprocessed_2 = preprocess_text(text2)
+        terms_ner_2 = extract_ner_terms(target_text_copy, nlp)
+        terms_pattern_2 = extract_specialist_terms_with_patterns(text_preprocessed_2, nlp_2)
+        terms_pattern_2 = post_process_terms(terms_pattern_2)
+        final_terms_2 = combine_term_lists(terms_pattern_2, terms_ner_2)
+
+        # TAG TECHNICAL TERMS #
+        source_tech_words = final_terms
+        source_count = 0
+        for word in source_tech_words:
+            if f'<span style="color: green;">{word}</span>' not in source_text:
+                source_text.insert(source_count, f'<span style="color: red;">{word}</span>')
+                source_count += 1
+        source_text.insert(source_count, f'<br>')
+
+        target_tech_words = final_terms_2
+        target_count = 0
+        for word in target_tech_words:
+            if f'<span style="color: green;">{word}</span>' not in target_text:
+                target_text.insert(target_count, f'<span style="color: red;">{word}</span>')
+                target_count += 1
+        target_text.insert(target_count, f'<br>')
+
+        print('languages: ', source_language, target_language)
+        print('texts: ', source_text, target_text)
+        print('source tech: ', source_tech_words)
+        print('target tech: ', target_tech_words)
+
+        # PACK AND SEND RESPONSE #
+        response_dict = {
+            'source_language': source_language,
+            'source_text': source_text,
+            'target_language': target_language,
+            'target_text': target_text,
+        }
+
+        return response_dict, 200
     else:
         return render_template('main_page.html',
                                source_text="", source_language="en",
                                target_text="", target_language="es")
-
-
-@app.route('/dictionary')
-def dictionary():
-    return ('<div>Dictionary tab.</div>'
-            '<a href="/" >Press here to go back to main menu</>')
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -102,6 +162,7 @@ def upload_file():
 
         return terms_dict, 200
 
+    # If the request method is GET, return the upload page with the list of glossaries
     glossary_files = get_glossary_names()
 
     return render_template('upload.html', glossary_files=glossary_files)
