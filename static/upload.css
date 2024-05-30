@@ -3,6 +3,28 @@
     margin: 20px;
 }
 
+.row_lang_choice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.col1 p {
+    margin: 0;
+    font-weight: bold;
+}
+
+.col2 {
+    display: flex;
+    align-items: center;
+}
+
+.col2 p {
+    font-weight: bold;
+    margin: 0 10px 0 0;
+}
+
 /*Source File Input*/
 #upload-form {
     padding: 20px 20px 0px 20px;
@@ -37,4 +59,56 @@
 
 #targetFileInput {
     display: none;
+}
+
+#loading-spinner {
+    display: none; /* Hidden by default */
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; /* Ensure it is on top of other elements */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    background-color: #343a40; /* Dark background */
+    color: white; /* White text */
+}
+
+.dropdown-item {
+    color: white; /* White text */
+}
+
+.dropdown-item:hover {
+    background-color: #007bff; /* Highlight on hover */
+    color: white;
+}
+
+/* Language Dropdown */
+#languageDropdown {
+    background-color: white; /* White background */
+    color: black; /* Black text */
+    border: 1px solid #ccc;
+}
+
+#languageDropdown .dropdown-item {
+    background-color: white; /* White background */
+    color: black; /* Black text */
+}
+
+#languageDropdown .dropdown-item:hover {
+    background-color: #007bff; /* Highlight on hover */
+    color: white; /* White text on hover */
 }

@@ -7,16 +7,18 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
 
   console.log(source_file, target_file)
   const domain = document.getElementById('dropdownMenuButton').innerText;
-  const language = 'en'
+  const language = getSelectedLanguage();
 
   if (source_file) {
     const formData = new FormData();
 
-    formData.append("language", language)
+    formData.append("language", 'en')
     formData.append("domain", domain)
 
     formData.append("file", source_file);
     formData.append("target_file", target_file);
+
+    showLoadingSpinner();
 
     fetch("/upload", {
       method: "POST",
@@ -64,10 +66,49 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
       document.getElementById('added_content_2').innerHTML = text2
 
       document.getElementById('alignment_content').innerHTML = text3
+
     })
       .catch((error) => {
         console.error("Error:", error);
         // Optionally, display an error message to the user
+      })
+      .finally(() => {
+        hideLoadingSpinner();
       });
   }
+}
+
+function showLoadingSpinner() {
+  document.getElementById('loading-spinner').style.display = 'block';
+}
+
+function hideLoadingSpinner() {
+  document.getElementById('loading-spinner').style.display = 'none';
+}
+
+function getSelectedLanguage() {
+  const dropdown = document.getElementById('languageDropdown');
+  return dropdown.value;
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    fetch('/tables')
+        .then(response => response.json())
+        .then(data => {
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+
+            data.forEach(table => {
+                const option = document.createElement('a');
+                option.className = 'dropdown-item';
+                option.href = '#';
+                option.innerText = table;
+                option.onclick = () => setSelectedOption(table, 'dropdownMenuButton');
+                dropdownMenu.appendChild(option); // Append to dropdown menu
+            });
+        })
+        .catch(error => console.error('Error fetching table names:', error));
+});
+
+function setSelectedOption(option, elementId) {
+    document.getElementById(elementId).innerText = option;
 }

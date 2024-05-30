@@ -1,3 +1,5 @@
+import sqlite3
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
@@ -54,14 +56,19 @@ def dictionary():
 def upload_file():
     if request.method == 'POST':
         source_lang = 'en'
-        target_lang = 'pl'
+        target_lang = request.form.get('language')
 
-        language = request.form['language']
-        domain = request.form['domain']
+        # language = request.form['language']
+        # domain = request.form['domain']
         source_file = request.files['file']
+        target_file = request.files.get('target_file')
 
-        if source_file.filename == '':
-            return 'No selected file', 400
+        if not source_file or source_file.filename == '':
+            return jsonify({'error': 'No source file selected'}), 400
+
+        if not target_file or target_file.filename == '':
+            return jsonify({'error': 'No target file selected'}), 400
+
 
         save_path = save_file(request.files['file'])
         save_path_2 = save_file(request.files['target_file'])
@@ -99,6 +106,14 @@ def upload_file():
 
     return render_template('upload.html', glossary_files=glossary_files)
 
+@app.route('/tables', methods=['GET'])
+def get_tables():
+    conn = sqlite3.connect(os.path.join(basedir, 'glossary.db'))
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+    conn.close()
+    return jsonify([table[0] for table in tables])
 
 @app.route('/glossary')
 def glossary():
