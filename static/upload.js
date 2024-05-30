@@ -9,10 +9,15 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
   const domain = document.getElementById('dropdownMenuButton').innerText;
   const language = getSelectedLanguage();
 
+   if (domain === "Choose glossary") {
+        alert("Please choose a glossary before proceeding.");
+        return;
+    }
+
   if (source_file) {
     const formData = new FormData();
 
-    formData.append("language", 'en')
+    formData.append("language", 'english')
     formData.append("domain", domain)
 
     formData.append("file", source_file);
@@ -27,6 +32,7 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
         .then(response => response.json())
         .then(resp => {
             const alignments = resp['alignment'];
+            const categories = resp['categories'];
 
             const tableBody = document.getElementById('translationsTableBody');
             tableBody.innerHTML = ''; // Clear existing rows
@@ -35,10 +41,10 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
                 const row = document.createElement('tr');
                 if (language === 'spanish') {
                     row.innerHTML = `
-                        <td contenteditable="true">${alignments[i][0]}</td>
-                        <td contenteditable="true">${alignments[i][1]}</td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
+                        <td>${alignments[i][0]}</td>
+                        <td>${alignments[i][1]}</td>
+                        <td></td>
+                        <td class="categories-column" title="${categories}">${categories}</td>
                         <td>
                             <button class="btn btn-secondary" onclick="editRow(this)">Edit</button>
                             <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
@@ -46,10 +52,10 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
                     `;
                 } else if (language === 'polish') {
                     row.innerHTML = `
-                        <td contenteditable="true">${alignments[i][0]}</td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true">${alignments[i][1]}</td>
-                        <td contenteditable="true"></td>
+                        <td>${alignments[i][0]}</td>
+                        <td></td>
+                        <td>${alignments[i][1]}</td>
+                        <td class="categories-column" title="${categories}">${categories}</td>
                         <td>
                             <button class="btn btn-secondary" onclick="editRow(this)">Edit</button>
                             <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
@@ -121,7 +127,7 @@ function editRow(button) {
         button.classList.add('btn-secondary');
     } else {
         // Switch to editable mode
-        const cells = row.querySelectorAll('td[contenteditable]');
+        const cells = row.querySelectorAll('td:not(:last-child)');
         cells.forEach(cell => {
             const input = document.createElement('input');
             input.type = 'text';
@@ -140,3 +146,11 @@ function deleteRow(button) {
     const row = button.closest('tr');
     row.remove();
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const uploadButton = document.querySelector('button[onclick="uploadFile()"]');
+    if (uploadButton) {
+        uploadButton.textContent = 'Get terms';
+    }
+});
