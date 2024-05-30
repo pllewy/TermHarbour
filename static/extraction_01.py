@@ -1,3 +1,5 @@
+# Author: Sebastian Piotrowski
+
 from translate import Translator
 import spacy
 from spacy.matcher import Matcher

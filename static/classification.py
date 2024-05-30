@@ -1,3 +1,5 @@
+# Author: Maurycy Oprus
+
 import static.extraction_01 as extraction
 from lbl2vec import Lbl2Vec, Lbl2TransformerVec
 from gensim.models.doc2vec import TaggedDocument

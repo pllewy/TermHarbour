@@ -41,6 +41,12 @@ In ./input_files there are sample files that can be used for testing the applica
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
+## Authors
+Maurycy Oprus - maurycyoprus@gmail.com \
+Sebastian Piotrowski - sebpiot13@gmail.com \
+Paweł Lewicki - https://www.linkedin.com/in/pllewicki/ \
+Adam Mickiewicz University, Poznań, Poland 2023-2024
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)

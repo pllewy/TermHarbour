@@ -1,3 +1,5 @@
+# Author: Paweł Lewicki
+
 from simalign import SentenceAligner
 
 
