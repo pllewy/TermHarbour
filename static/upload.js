@@ -20,54 +20,45 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
 
     showLoadingSpinner();
 
-    fetch("/upload", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log("File uploaded successfully");
-          return response.json();
-          // Optionally, display a success message to the user
-        } else {
-          console.error("Failed to upload file");
-          // Optionally, display an error message to the user
-        }
-      })
-        // STĄD IDZIE DO PYTHONA, JEST PRZETWARZANE I WRACA Z POWROTEM
-        .then((resp) => {
-      const source_terms = resp['source_terms'];
-      const target_terms = resp['target_terms'];
-      const alignments = resp['alignment'];
+  fetch("/upload", {
+            method: "POST",
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(resp => {
+            const alignments = resp['alignment'];
 
-      // const target_content = resp.target_content;
-      console.log( source_terms, target_terms, alignments)
+            const tableBody = document.getElementById('translationsTableBody');
+            tableBody.innerHTML = ''; // Clear existing rows
 
-      let text = "";
-      for (let i = 0; i < source_terms.length; i++) {
-        text += source_terms[i] + "<br>";
-      }
-
-      let text2 = "";
-      for (let i = 0; i < target_terms.length; i++) {
-        text2 += target_terms[i] + "<br>";
-      }
-
-      text = "";
-      text2 = "";
-      let text3 = "";
-      for (let i = 0; i < alignments.length; i++) {
-        text += alignments[i][0] + "<br>";
-        text2 += alignments[i][1] + "<br>";
-        text3 += alignments[i][0] + "     " + alignments[i][1] + "<br>";
-      }
-
-      document.getElementById('added_content').innerHTML = text
-      document.getElementById('added_content_2').innerHTML = text2
-
-      document.getElementById('alignment_content').innerHTML = text3
-
-    })
+         for (let i = 0; i < alignments.length; i++) {
+                const row = document.createElement('tr');
+                if (language === 'spanish') {
+                    row.innerHTML = `
+                        <td contenteditable="true">${alignments[i][0]}</td>
+                        <td contenteditable="true">${alignments[i][1]}</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="editRow(this)">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                        </td>
+                    `;
+                } else if (language === 'polish') {
+                    row.innerHTML = `
+                        <td contenteditable="true">${alignments[i][0]}</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true">${alignments[i][1]}</td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="editRow(this)">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                        </td>
+                    `;
+                }
+                tableBody.appendChild(row);
+            }
+        })
       .catch((error) => {
         console.error("Error:", error);
         // Optionally, display an error message to the user
@@ -111,4 +102,40 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 function setSelectedOption(option, elementId) {
     document.getElementById(elementId).innerText = option;
+}
+
+function editRow(button) {
+    const row = button.closest('tr');
+    const isEditing = button.textContent === 'Confirm';
+
+    if (isEditing) {
+        // Save values and switch to non-editable mode
+        const inputs = row.querySelectorAll('input');
+        inputs.forEach(input => {
+            const cell = input.closest('td');
+            cell.textContent = input.value;
+        });
+        button.textContent = 'Edit';
+        button.classList.remove('btn-success');
+        button.classList.add('btn-secondary');
+    } else {
+        // Switch to editable mode
+        const cells = row.querySelectorAll('td[contenteditable]');
+        cells.forEach(cell => {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = cell.textContent;
+            input.classList.add('form-control');
+            cell.textContent = '';
+            cell.appendChild(input);
+        });
+        button.textContent = 'Confirm';
+        button.classList.remove('btn-secondary');
+        button.classList.add('btn-success');
+    }
+}
+
+function deleteRow(button) {
+    const row = button.closest('tr');
+    row.remove();
 }
