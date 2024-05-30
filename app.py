@@ -154,6 +154,7 @@ def upload_file():
 
         alignment = align(final_terms, final_terms_2)
 
+        # PACK AND SEND RESPONSE #
         terms_dict = {
             'source_terms': final_terms,
             'target_terms': final_terms_2,
