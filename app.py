@@ -159,6 +159,7 @@ def upload_file():
             'alignment': alignment
         }
 
+
         return terms_dict, 200
 
     # If the request method is GET, return the upload page with the list of glossaries
