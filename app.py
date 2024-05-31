@@ -61,14 +61,6 @@ def main_page():
                                source_text="", source_language="en",
                                target_text="", target_language="es")
 
-# def extract_terms(text, lang):
-#     nlp = load_spacy_model(lang)
-#     text_preprocessed = preprocess_text(text)
-#     terms_ner = extract_ner_terms(text, nlp)
-#     terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
-#     terms_pattern = post_process_terms(terms_pattern)
-#     return combine_term_lists(terms_pattern, terms_ner)
-
 def tag_terms(terms, text):
     for word in terms:
         if f'<span style="color: green;">{word}</span>' not in text:
