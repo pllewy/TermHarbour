@@ -14,7 +14,7 @@ def save_file(source_file):
     if source_file.filename == '':
         return 'No selected file', 400
 
-    save_path = os.path.join('..', 'input_files', source_file.filename)
+    save_path = os.path.join('input_files', source_file.filename)
     source_file.save(save_path)
 
     return save_path

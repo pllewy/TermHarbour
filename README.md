@@ -1,13 +1,13 @@
+
 # Term Harbour
 
-This is a Flask application that provides several functionalities including text extraction, translation, and term processing.
+Welcome to Term Harbour, your AI-powered translation assistant. This guide will walk you through the features and functionalities of our  specialised term extraction, categorisation and verification tool, ensuring you can use it effectively to load and verify your texts.
 
 ## Features
 
-- Main Page: A page where users can input text, source language, and target language for processing.
-- Glossary: A page that displays the contents of glossary files found in the `./glossaries` directory.
-- Upload: A page where users can upload a file for text extraction and translation. The extracted terms are then post-processed.
-- Test: A page for testing the extraction and translation of terms from a specific file.
+- Main Page: A page where you can input text, source language, and target language for recoginition, whether all terms have been accurately translated.
+- Glossary: A page that displays already translated and categorised terms from a chosen domain
+- Upload: A page where users can upload a file for text extraction. The given list of terms can be further loaded into glossary database under given domain.
 
 ## Setup
 
@@ -55,4 +55,3 @@ Adam Mickiewicz University, Poznań, Poland 2023-2024
 
 - Masoud Jalili Sabet, Philipp Dufter, François Yvon, and Hinrich Schütze. 2020. SimAlign: High Quality Word Alignments Without Parallel Training Data Using Static and Contextualized Embeddings. In Findings of the Association for Computational Linguistics: EMNLP 2020, pages 1627–1643, Online. Association for Computational Linguistics.
 - Honnibal, M. & Montani, I., 2017. spaCy 2: Natural language understanding with Bloom embeddings, convolutional neural networks and incremental parsing.
-- 
