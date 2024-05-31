@@ -31,6 +31,7 @@ WARNING: This will install big models for spaCy (~2 Gb).
     python app.py
     ```
 
+Check documentation folder in ./documentation for more information.
 ## Usage
 
 Navigate to the main page at `http://localhost:5000/`. From there, you can access the other features of the application.
