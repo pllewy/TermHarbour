@@ -36,7 +36,7 @@ Check documentation folder in ./documentation for more information.
 
 Navigate to the main page at `http://localhost:5000/`. From there, you can access the other features of the application.
 
-In ./input_files there are sample files that can be used for testing the application.
+In ./test_files there are sample files that can be used for testing the application.
 
 ## Contributing
 
