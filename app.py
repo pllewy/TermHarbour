@@ -61,6 +61,7 @@ def main_page():
                                source_text="", source_language="en",
                                target_text="", target_language="es")
 
+
 def tag_terms(terms, text):
     for word in terms:
         if f'<span style="color: green;">{word}</span>' not in text:
@@ -102,6 +103,35 @@ def upload_file():
         return terms_dict, 200
 
     return render_template('upload.html')
+
+
+@app.route('/add_to_glossary', methods=['POST'])
+def add_to_glossary():
+    data = request.json
+    category = data['category']
+    translations = data['translations']
+
+    for translation in translations:
+        english = translation['english']
+        spanish = translation['spanish']
+        polish = translation['polish']
+        categories = translation['categories']
+
+        existing_record = db.session.query(Glossary).filter_by(english=english).first()
+        if existing_record:
+            if spanish and (not existing_record.spanish or existing_record.spanish != spanish):
+                existing_record.spanish = f"{existing_record.spanish}, {spanish}" if existing_record.spanish else spanish
+            if polish and (not existing_record.polish or existing_record.polish != polish):
+                existing_record.polish = f"{existing_record.polish}, {polish}" if existing_record.polish else polish
+            if categories and (not existing_record.categories or existing_record.categories != categories):
+                existing_record.categories = f"{existing_record.categories}, {categories}" if existing_record.categories else categories
+        else:
+            new_record = Glossary(english=english, spanish=spanish, polish=polish, categories=categories)
+            new_record.__tablename__ = category
+            db.session.add(new_record)
+
+    db.session.commit()
+    return jsonify({'message': 'Translations added successfully'}), 200
 
 def extract_terms(text, lang):
     nlp = load_spacy_model(lang)

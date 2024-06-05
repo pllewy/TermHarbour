@@ -16,6 +16,11 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
   const target_fileInput = document.getElementById(targetElementId);
   const target_file = target_fileInput.files[0];
 
+  if (!source_file || !target_file) {
+        alert("Please select both source and target files.");
+        return;
+    }
+
   // Log the source and target files
   console.log(source_file, target_file)
 
@@ -87,6 +92,7 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
 
                 tableBody.appendChild(row);
             }
+            document.getElementById('addToGlossaryButton').style.display = 'block';
         })
       .catch((error) => {
         // Log any errors
@@ -195,7 +201,9 @@ function editRow(button) {
  */
 function deleteRow(button) {
     const row = button.closest('tr');
-    row.remove();
+    if (confirm(`Are you sure you want to delete the term ${row.cells[0].innerText}?`)) {
+        row.remove();
+    }
 }
 
 /**
@@ -208,3 +216,50 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadButton.textContent = 'Get terms';
     }
 });
+
+/**
+ * Function to add the terms to the glossary.
+ */
+function addToGlossary() {
+  // Get the table rows
+  const rows = document.querySelectorAll('#translationsTableBody tr');
+
+  // Get the chosen glossary from the dropdown
+  const category = document.getElementById('dropdownMenuButton').innerText;
+
+  // Check if a glossary is chosen
+  if (category === "Choose glossary") {
+    alert("Please choose a glossary before proceeding.");
+    return;
+  }
+
+  // Create an array to hold the translations
+  const translations = [];
+
+  // Iterate through the rows to get the translations
+  rows.forEach(row => {
+    const english = row.cells[0].innerText;
+    const spanish = row.cells[1].innerText;
+    const polish = row.cells[2].innerText;
+    const categories = row.cells[3].innerText;
+
+    translations.push({english, spanish, polish, categories});
+  });
+
+  // Send the translations to the server
+  fetch('/add_to_glossary', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({category, translations}),
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert(data.message);
+    location.reload(); // Reset the page
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+}
