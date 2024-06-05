@@ -12,24 +12,27 @@ document.addEventListener('DOMContentLoaded', function () {
             const english = this.dataset.english;
             const table = document.getElementById('currentTable').value;
 
-            // Sends a POST request to delete the term
-            fetch(`/delete/${english}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `table=${table}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                // If the deletion was successful, reloads the page
-                // Otherwise, alerts the user of an error
-                if (data.result === 'success') {
-                    window.location.reload();
-                } else {
-                    alert('Error deleting record');
-                }
-            });
+            // Show confirmation dialog
+            if (confirm(`Are you sure you want to delete the term "${english}"?`)) {
+                // Sends a POST request to delete the term
+                fetch(`/delete/${english}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `table=${table}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // If the deletion was successful, reloads the page
+                        // Otherwise, alerts the user of an error
+                        if (data.result === 'success') {
+                            window.location.reload();
+                        } else {
+                            alert('Error deleting record');
+                        }
+                    });
+            }
         });
     });
 
