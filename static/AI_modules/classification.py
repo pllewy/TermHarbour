@@ -59,17 +59,9 @@ def text_categorization(category, language, text):
 
     top_categories = sorted(top_categories, key=lambda x: x[1], reverse=True)
 
-    if len(top_categories) > 4:
+    if category == 'news':
+        top_categories = top_categories[:1]
+    elif len(top_categories) > 4:
         top_categories = top_categories[:4]
 
     return [category for category, score in top_categories]
-
-
-if __name__ == "__main__":
-    print(
-        text_categorization(
-            'medicine',
-            'en',
-            clean_text('C:/Users/Mauri/Desktop/main_repo/TermHarbour/input_files/health.pdf')
-        )
-    )
