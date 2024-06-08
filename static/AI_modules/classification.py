@@ -33,6 +33,7 @@ def text_categorization(category, language, text):
     Returns:
         list: A list of top categories for the text.
     """
+    model = Lbl2Vec.load('models/Lbl2Vec/Lbl2Vec_broad_simple')
     if category == 'medicine':
         if language == 'english':
             model = Lbl2Vec.load('models/Lbl2Vec/Lbl2Vec_med_simple_2')
