@@ -12,7 +12,8 @@ Welcome to Term Harbour, your AI-powered translation assistant. This guide will 
 ## Setup
 
 1. Clone the repository.
-2. Install the required Python packages using setuptools. Run the following command in the terminal.\
+2. Install Python version -  3.11.9
+3. Install the required Python packages using setuptools. Run the following command in the terminal.\
 WARNING: This will install big models for spaCy (~2 Gb).
 
    ```
@@ -26,7 +27,7 @@ WARNING: This will install big models for spaCy (~2 Gb).
    python -m spacy download pl_core_news_lg
    ```
 
-3. Run the Flask application:
+4. Run the Flask application:
     ```
     python app.py
     ```

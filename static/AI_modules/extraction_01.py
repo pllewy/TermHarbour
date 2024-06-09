@@ -6,9 +6,7 @@ from spacy.matcher import Matcher
 import PyPDF2
 import re
 import csv
-from sklearn.feature_extraction.text import TfidfVectorizer
-import numpy as np
-from nltk import sent_tokenize
+from collections import Counter
 
 
 def load_spacy_model(language_code):
@@ -53,14 +51,11 @@ def preprocess_text(text):
     # Remove hyperlinks
     text = re.sub(r'http[s]?://\S+', '', text)
 
-    # Remove special characters
-    text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
+    # Remove special characters except Polish and Spanish letters
+    text = re.sub(r'[^a-zA-Z0-9\sąćęłńóśźżĄĆĘŁŃÓŚŹŻáéíóúüñÁÉÍÓÚÜÑ]', '', text)
 
     # Normalize spaces to a single space
     text = re.sub(r'\s+', ' ', text).strip()
-
-    # Remove non ascii
-    text = re.sub(r'[^\x00-\x7F]+', ' ', text)
 
     # Remove words that contain any digits
     text = re.sub(r'\b\w*\d\w*\b', '', text)
@@ -132,35 +127,37 @@ def extract_specialist_terms_with_patterns(text, nlp):
     Returns:
         list: A list of extracted specialist terms.
     """
-    doc = nlp(text)
     specialist_terms = []
+    max_length = nlp.max_length  # Get the maximum length allowed by spaCy
+    for i in range(0, len(text), max_length):
+        chunk = text[i:i + max_length]
+        doc = nlp(chunk)
+        matcher = Matcher(nlp.vocab)
+        patterns = [
+            # Pattern 1: adjective or noun followed by noun
+            [{"POS": {"IN": ["ADJ", "NOUN"]}, "OP": "*", "IS_PUNCT": False}, {"POS": "NOUN"}],
+            # Pattern 2: adjective or noun followed by adposition, optional determiner, adjective or noun, and noun
+            [{"POS": {"IN": ["ADJ", "NOUN"]}, "OP": "+", "IS_PUNCT": False},
+             {"POS": "ADP", "IS_PUNCT": False}, {"POS": "DET", "OP": "?", "IS_PUNCT": False},
+             {"POS": {"IN": ["ADJ", "NOUN"]}, "OP": "*", "IS_PUNCT": False}, {"POS": "NOUN"}],
+            # Pattern 3: adjective or noun followed by zero or more adjectives, nouns, determiners, or adpositions, and adjective or noun
+            [{"POS": {"IN": ["ADJ", "NOUN"]}, "IS_PUNCT": False},
+             {"POS": {"IN": ["ADJ", "NOUN", "DET", "ADP"]}, "OP": "*", "IS_PUNCT": False},
+             {"POS": {"IN": ["ADJ", "NOUN"]}, "IS_PUNCT": False}]
+        ]
 
-    matcher = Matcher(nlp.vocab)
-    patterns = [
-        # Pattern 1: adjective or noun followed by noun
-        [{"POS": {"IN": ["ADJ", "NOUN"]}, "OP": "*", "IS_PUNCT": False},
-         {"POS": "NOUN"}],
-        # Pattern 2: adjective or noun followed by adposition, optional determiner, adjective or noun, and noun
-        [{"POS": {"IN": ["ADJ", "NOUN"]}, "OP": "+", "IS_PUNCT": False},
-         {"POS": "ADP", "IS_PUNCT": False}, {"POS": "DET", "OP": "?", "IS_PUNCT": False},
-         {"POS": {"IN": ["ADJ", "NOUN"]}, "OP": "*", "IS_PUNCT": False}, {"POS": "NOUN"}],
-        # Pattern 3: adjective or noun followed by zero or more adjectives, nouns, determiners, or adpositions, and adjective or noun
-        [{"POS": {"IN": ["ADJ", "NOUN"]}, "IS_PUNCT": False},
-         {"POS": {"IN": ["ADJ", "NOUN", "DET", "ADP"]}, "OP": "*", "IS_PUNCT": False},
-         {"POS": {"IN": ["ADJ", "NOUN"]}, "IS_PUNCT": False}]
-    ]
+        for pattern in patterns:
+            matcher.add("SPECIALIST_TERM", [pattern])
 
-    for pattern in patterns:
-        matcher.add("SPECIALIST_TERM", [pattern])
+        matches = matcher(doc)
 
-    matches = matcher(doc)
-
-    for match_id, start, end in matches:
-        span = doc[start:end]
-        term = ' '.join([token.lemma_ for token in span]).lower()
-        specialist_terms.append(term.replace(' ', '_'))
+        for match_id, start, end in matches:
+            span = doc[start:end]
+            term = ' '.join([token.lemma_ for token in span]).lower()
+            specialist_terms.append(term.replace(' ', '_'))
 
     return specialist_terms
+
 
 
 def extract_ner_terms(text, nlp):
@@ -175,9 +172,11 @@ def extract_ner_terms(text, nlp):
         list: A list of extracted NER terms.
     """
     ner_terms = []
-    doc = nlp(text)
-    ner_terms = [ent.text.replace(' ', '_') for ent in doc.ents if
-                 ent.label_ in ["ORG", "PERSON", "GPE", "EVENT", "WORK_OF_ART"]]
+    max_length = nlp.max_length  # Get the maximum length allowed by spaCy
+    for i in range(0, len(text), max_length):
+        chunk = text[i:i + max_length]
+        doc = nlp(chunk)
+        ner_terms.extend([ent.text.replace(' ', '_') for ent in doc.ents if ent.label_ in ["ORG", "PERSON", "GPE", "EVENT", "WORK_OF_ART"]])
     return ner_terms
 
 
@@ -209,7 +208,6 @@ def post_process_terms(terms):
     Returns:
         list: The post-processed list of terms.
     """
-    terms = [term for term in terms if terms.count(term) > 1]  # Keep terms that appear more than once
-    terms = [term for term in terms if not re.match(r'^\d+[a-z]*$', term)]  # Ignore terms like "d4", "400th"
-
-    return terms
+    term_counts = Counter(terms)
+    processed_terms = [term for term in term_counts if term_counts[term] > 1 and not re.match(r'^\d+[a-z]*$', term)]
+    return processed_terms
