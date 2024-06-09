@@ -97,25 +97,42 @@ def upload_file():
         source_text = read_text_from_file(source_file_path)
         target_text = read_text_from_file(target_file_path)
 
-        # Create text batches   - TODO new function
+        # Create text batches for faster simalign
         source_batches, target_batches = create_text_batches(source_text, target_text)
 
+        # Extract terms from text
         source_terms = extract_terms(source_text, source_lang)
         target_terms = extract_terms(target_text, target_lang)
 
-        print("HERE IS THE SOURCE TERMS:")
-        print(len(source_terms))
+        print("SOURCE TERMS:", len(source_terms))
+        print("TARGET TERMS:", len(target_terms))
 
-        print("HERE IS THE TARGET TERMS:")
-        print(len(target_terms))
+        # Align terms
+        all_alignments = []
+        no_batches_diff = abs(len(source_batches) - len(target_batches))
 
-        alignment = align(source_terms, target_terms)
+        for i in range(min(len(source_batches), len(target_batches))):
+            curr_src_batch = source_batches[i]
+            curr_tgt_batch = target_batches[i]
+            print("LIST LENGTHS: ", len(curr_src_batch), len(curr_tgt_batch))
+            alignment = align(curr_src_batch, curr_tgt_batch, print_output=True)
+
+            for c in range(len(alignment)):
+                all_alignments.append(alignment[c])
+
+        print("HERE ARE ALL ALIGNMENTS")
+        print(all_alignments)
+
+        # for align in all_alignments:
+        #     if align
+
+        final_word_pairs = []
 
         print("HERE IS THE ALIGNMENT:")
-        print(len(alignment))
+        print(len(all_alignments))
 
         terms_dict = {
-            'alignment': alignment,
+            'alignment': all_alignments,
             'categories': text_categorization(domain, source_lang, source_text)
         }
 

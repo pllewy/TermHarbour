@@ -1,28 +1,5 @@
-class Stack:
-    def __init__(self):
-        self.items = []
-
-    def is_empty(self):
-        return len(self.items) == 0
-
-    def push(self, item):
-        self.items.append(item)
-
-    def pop(self):
-        if self.is_empty():
-            raise IndexError("pop from empty stack")
-        return self.items.pop()
-
-    def peek(self):
-        if self.is_empty():
-            raise IndexError("peek from empty stack")
-        return self.items[-1]
-
-    def size(self):
-        return len(self.items)
-
-    def __repr__(self):
-        return f"Stack({self.items})"
+from static.AI_modules.extraction_01 import preprocess_text
+from static.timer import measure_time
 
 
 def write_batches_to_file_as_list(batches, file_path):
@@ -33,54 +10,91 @@ def write_batches_to_file_as_list(batches, file_path):
         file.write("]\n")
 
 
-def create_text_batches(source_text, target_text):
-    source_batches = source_text.split('.\n')
-    target_batches = target_text.split('.\n')
+@measure_time
+def create_text_batches(raw_src_text, raw_tgt_text):
+    src_batches = raw_src_text.split('.\n')
+    tgt_batches = raw_tgt_text.split('.\n')
 
-    print("TEXT LENGTHS")
-    print(len(source_text))
-    print(len(target_text))
+    print("\n\nTEXT LENGTHS")
+    print(len(raw_src_text))
+    print(len(raw_tgt_text))
 
-    source_batches_len = [len(batch) for batch in source_batches]
-    target_batches_len = [len(batch) for batch in target_batches]
+    for i in range(len(src_batches)):
+        src_batches[i] = preprocess_text(src_batches[i])
+        src_batches[i] = src_batches[i].split(' ')
 
-    print("HERE ARE BATCHES")
-    print(sum(source_batches_len), len(source_batches), source_batches_len)
-    print(sum(target_batches_len), len(target_batches), target_batches_len)
+    for i in range(len(tgt_batches)):
+        tgt_batches[i] = preprocess_text(tgt_batches[i])
+        tgt_batches[i] = tgt_batches[i].split(' ')
 
-    new_source_batches = []
-    new_target_batches = []
+    src_batches_len = [len(batch) for batch in src_batches]
+    tgt_batches_len = [len(batch) for batch in tgt_batches]
+
+    print("\nHERE ARE BATCHES")
+    print(sum(src_batches_len), len(src_batches), src_batches_len)
+    print(sum(tgt_batches_len), len(tgt_batches), tgt_batches_len)
+
+    new_src_batches = []
+    new_tgt_batches = []
 
     i = 0
     j = 0
 
-    while len(source_batches) > 0 and len(target_batches) > 0:
-        new_source_batches.append(source_batches[0])
-        del source_batches[0]
-        new_target_batches.append(target_batches[0])
-        del target_batches[0]
+    # Initialize the new batches
+    new_src_batches.append(src_batches[0])
+    del src_batches[0]
+    new_tgt_batches.append(tgt_batches[0])
+    del tgt_batches[0]
 
-        if len(new_source_batches[i]) > len(new_target_batches[j]) + 0.2 * len(new_target_batches[j]):
-            new_target_batches[j] = new_target_batches[j] + target_batches[0]
-            del target_batches[0]
+    while len(src_batches) > 0 and len(tgt_batches) > 0:
+        # PRINTER
+        src_batches_len = [len(batch) for batch in src_batches]
+        tgt_batches_len = [len(batch) for batch in tgt_batches]
+        new_src_batches_len = [len(batch) for batch in new_src_batches]
+        new_tgt_batches_len = [len(batch) for batch in new_tgt_batches]
+
+        print("\nHERE ARE BATCHES in while loop")
+        print("old src: ", sum(src_batches_len), len(src_batches), src_batches_len)
+        print("old tgt: ", sum(tgt_batches_len), len(tgt_batches), tgt_batches_len)
+        print("new src: ", sum(new_src_batches_len), len(new_src_batches), new_src_batches_len)
+        print("new tgt: ", sum(new_tgt_batches_len), len(new_tgt_batches), new_tgt_batches_len)
+        # END PRINTER
+
+        if len(new_src_batches[i]) > len(new_tgt_batches[j]) + 0.3 * len(new_tgt_batches[j]):
+            print("MERGING TGT")
+            new_tgt_batches[j] = new_tgt_batches[j] + tgt_batches[0]
+            del tgt_batches[0]
         else:
             i += 1
             j += 1
+            new_src_batches.append(src_batches[0])
+            del src_batches[0]
+            new_tgt_batches.append(tgt_batches[0])
+            del tgt_batches[0]
 
+    new_src_batches_len = [len(batch) for batch in new_src_batches]
+    new_tgt_batches_len = [len(batch) for batch in new_tgt_batches]
 
-    print("HERE ARE NEW BATCHES")
-    print([len(batch) for batch in new_source_batches])
-    print([len(batch) for batch in new_target_batches])
+    print("\nHERE ARE NEWER BATCHES")
+    print(sum(new_src_batches_len), len(new_src_batches), new_src_batches_len)
+    print(sum(new_tgt_batches_len), len(new_tgt_batches), new_tgt_batches_len)
 
-    new_source_batches_len = [len(batch) for batch in new_source_batches]
-    new_target_batches_len = [len(batch) for batch in new_target_batches]
+    for i in range(len(src_batches)):
+        new_src_batches.append(src_batches[i])
 
-    print("HERE ARE BATCHES")
-    print(sum(new_source_batches_len), len(new_source_batches), new_source_batches_len)
-    print(sum(new_target_batches_len), len(new_target_batches), new_target_batches_len)
+    for i in range(len(tgt_batches)):
+        new_tgt_batches.append(tgt_batches[i])
 
-    # print("SAVE TO FILE")
-    # write_batches_to_file_as_list(source_batches, "source_batches.txt")
-    # write_batches_to_file_as_list(target_batches, "target_batches.txt")
+    new_src_batches_len = [len(batch) for batch in new_src_batches]
+    new_tgt_batches_len = [len(batch) for batch in new_tgt_batches]
 
-    return source_text, target_text
+    print("\nHERE ARE NEW BATCHES")
+    print(sum(new_src_batches_len), len(new_src_batches), new_src_batches_len)
+    print(sum(new_tgt_batches_len), len(new_tgt_batches), new_tgt_batches_len)
+    print("\n\n")
+
+    print("SAVE TO FILE")
+    write_batches_to_file_as_list(new_src_batches, "src_batches.txt")
+    write_batches_to_file_as_list(new_tgt_batches, "tgt_batches.txt")
+
+    return new_src_batches, new_tgt_batches

@@ -43,10 +43,13 @@ def preprocess_text(text):
     Returns:
         str: The preprocessed text.
     """
-    text = text.replace('\n\n', '*paragraph*')
 
     # Replace newline characters with a space
     text = text.replace('\n', ' ')
+
+    # remove commas - TODO new, check if it is necessary
+    text = text.replace(',', '')
+    text = text.replace('.', '')
 
     # Remove references like [1], [2-4], [5,6], etc.
     text = re.sub(r'\[\d+–\d+\]|\[\d+(,\d+)*\]', '', text)
