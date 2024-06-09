@@ -10,6 +10,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from nltk import sent_tokenize
 
+from static.timer import measure_time
+
 
 def load_spacy_model(language_code):
     """
@@ -41,6 +43,8 @@ def preprocess_text(text):
     Returns:
         str: The preprocessed text.
     """
+    text = text.replace('\n\n', '*paragraph*')
+
     # Replace newline characters with a space
     text = text.replace('\n', ' ')
 
@@ -68,6 +72,7 @@ def preprocess_text(text):
     return text
 
 
+@measure_time
 def read_text_from_file(file_path):
     """
     Reads text from a file based on its file type.
