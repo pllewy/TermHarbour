@@ -5,12 +5,16 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
 from static.AI_modules.alignment import align, align_sentences
+from static.text_batches import create_text_batches
+from static.timer import measure_time
 from static.upload.upload import save_file
 from static.AI_modules.extraction_01 import (read_text_from_file, post_process_terms, preprocess_text, load_spacy_model,
-                                  extract_specialist_terms_with_patterns,  combine_term_lists, extract_ner_terms)
+                                             extract_specialist_terms_with_patterns, combine_term_lists,
+                                             extract_ner_terms)
 from static.AI_modules.classification import text_categorization
 import os
 import warnings
+
 warnings.filterwarnings("ignore", category=FutureWarning, module='huggingface_hub')
 
 app = Flask(__name__)
@@ -62,15 +66,16 @@ def main_page():
                                target_text="", target_language="es")
 
 
-def tag_terms(terms, text):
+def tag_terms(terms, input_text):
     for word in terms:
-        if f'<span style="color: green;">{word}</span>' not in text:
-            text.append(f'<span style="color: red;">{word}</span>')
-    text.append('<br>')
+        if f'<span style="color: green;">{word}</span>' not in input_text:
+            input_text.append(f'<span style="color: red;">{word}</span>')
+    input_text.append('<br>')
 
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
+    # Get files from web form
     if request.method == 'POST':
         source_lang = 'english'
         target_lang = request.form.get('language')
@@ -84,19 +89,60 @@ def upload_file():
         if not target_file or target_file.filename == '':
             return jsonify({'error': 'No target file selected'}), 400
 
+        # Save files
         source_file_path = save_file(source_file)
         target_file_path = save_file(target_file)
 
+        # Read text from files
         source_text = read_text_from_file(source_file_path)
         target_text = read_text_from_file(target_file_path)
 
+        # Create text batches for faster simalign
+        # returns list of words (for closer paragraph matching)
+        source_batches, target_batches = create_text_batches(source_text, target_text)
+
+        # Extract GLOBAL terms from text
         source_terms = extract_terms(source_text, source_lang)
         target_terms = extract_terms(target_text, target_lang)
 
-        alignment = align(source_terms, target_terms)
+        print("SOURCE TERMS:", len(source_terms))
+        print("TARGET TERMS:", len(target_terms))
+
+        # Align terms
+        all_alignments = []
+        no_batches_diff = abs(len(source_batches) - len(target_batches))
+
+        for i in range(min(len(source_batches), len(target_batches))):
+            curr_src_batch = source_batches[i]
+            curr_tgt_batch = target_batches[i]
+
+            print("LIST LENGTHS: ", len(curr_src_batch), len(curr_tgt_batch))
+            alignment = align(curr_src_batch, curr_tgt_batch)
+
+            source_batch_terms = extract_terms(' '.join(curr_src_batch), source_lang, preprocessing=False)
+            target_batch_terms = extract_terms(' '.join(curr_tgt_batch), target_lang, preprocessing=False)
+
+            print("SOURCE BATCH TERMS BY SEBA: ", len(source_batch_terms), source_batch_terms)
+            print("TARGET BATCH TERMS BY SEBA: ", len(target_batch_terms), target_batch_terms)
+
+            print("ALIGNMENT: ", len(alignment), alignment)
+
+            for c in range(len(alignment)):
+                all_alignments.append(alignment[c])
+
+        print("HERE ARE ALL ALIGNMENTS")
+        print(len(all_alignments), all_alignments)
+
+        # for align in all_alignments:
+        #     if align
+
+        final_word_pairs = []
+
+        # print("HERE IS THE ALIGNMENT:")
+        # print(len(all_alignments))
 
         terms_dict = {
-            'alignment': alignment,
+            'alignment': all_alignments,
             'categories': text_categorization(domain, source_lang, source_text)
         }
 
@@ -133,10 +179,15 @@ def add_to_glossary():
     db.session.commit()
     return jsonify({'message': 'Translations added successfully'}), 200
 
-def extract_terms(text, lang):
+
+@measure_time
+def extract_terms(input_text, lang, preprocessing=True):
     nlp = load_spacy_model(lang)
-    text_preprocessed = preprocess_text(text)
-    terms_ner = extract_ner_terms(text, nlp)
+    if preprocessing:
+        text_preprocessed = preprocess_text(input_text)
+    else:
+        text_preprocessed = input_text
+    terms_ner = extract_ner_terms(input_text, nlp)
     terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
     terms_pattern = post_process_terms(terms_pattern)
     return combine_term_lists(terms_pattern, terms_ner)
@@ -165,6 +216,7 @@ def categorize_text():
     categories = text_categorization(category, language, text)
     return jsonify({'categories': categories})
 
+
 @app.route('/glossary')
 def glossary():
     table_name = request.args.get('table', 'medicine')
@@ -180,12 +232,14 @@ def add_record():
     polish = request.form.get('polish')
     categories = request.form.get('categories')
 
-    existing_record = db.session.execute(text(f'SELECT * FROM {table_name} WHERE english = :english'), {'english': english}).fetchone()
+    existing_record = db.session.execute(text(f'SELECT * FROM {table_name} WHERE english = :english'),
+                                         {'english': english}).fetchone()
     if existing_record:
         return jsonify({'result': 'error', 'message': 'The English word already exists in the table.'})
 
     db.session.execute(
-        text(f'INSERT INTO {table_name} (english, spanish, polish, categories) VALUES (:english, :spanish, :polish, :categories)'),
+        text(
+            f'INSERT INTO {table_name} (english, spanish, polish, categories) VALUES (:english, :spanish, :polish, :categories)'),
         {'english': english, 'spanish': spanish, 'polish': polish, 'categories': categories})
     db.session.commit()
     return jsonify({'result': 'success'})
@@ -200,13 +254,16 @@ def edit_record(english):
     categories = request.form['categories']
 
     if new_english != english:
-        existing_record = db.session.execute(text(f'SELECT * FROM {table_name} WHERE english = :new_english'), {'new_english': new_english}).fetchone()
+        existing_record = db.session.execute(text(f'SELECT * FROM {table_name} WHERE english = :new_english'),
+                                             {'new_english': new_english}).fetchone()
         if existing_record:
             return jsonify({'result': 'error', 'message': 'The new English word already exists in the table.'})
 
     db.session.execute(
-        text(f'UPDATE {table_name} SET english = :new_english, spanish = :spanish, polish = :polish, categories = :categories WHERE english = :english'),
-        {'new_english': new_english, 'spanish': spanish, 'polish': polish, 'categories': categories, 'english': english})
+        text(
+            f'UPDATE {table_name} SET english = :new_english, spanish = :spanish, polish = :polish, categories = :categories WHERE english = :english'),
+        {'new_english': new_english, 'spanish': spanish, 'polish': polish, 'categories': categories,
+         'english': english})
     db.session.commit()
     return jsonify({'result': 'success'})
 

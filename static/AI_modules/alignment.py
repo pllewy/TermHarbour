@@ -2,7 +2,11 @@
 
 from simalign import SentenceAligner
 
-def align(source_sentence, target_sentence, alignment_method="itermax", print_output=False, print_input=False):
+from static.timer import measure_time
+
+
+@measure_time
+def align(source_sentence, target_sentence, alignment_method="inter", print_output=False, print_input=False):
     """
     This function aligns a source sentence with a target sentence using a specified alignment method.
 

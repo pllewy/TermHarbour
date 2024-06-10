@@ -1,5 +1,9 @@
 import os
 
+from static.timer import measure_time
+
+
+@measure_time
 def save_file(source_file):
     """
     Saves the provided file to the 'input_files' directory.

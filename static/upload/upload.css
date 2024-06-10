@@ -98,14 +98,14 @@
 
 /* Language Dropdown */
 #languageDropdown {
-    background-color: white; /* White background */
-    color: black; /* Black text */
+    background-color: #343a40; /* Dark background */
+    color: white; /* White text */
     border: 1px solid #ccc;
 }
 
 #languageDropdown .dropdown-item {
-    background-color: white; /* White background */
-    color: black; /* Black text */
+    background-color: #343a40; /* Dark background */
+    color: white; /* White text */
 }
 
 #languageDropdown .dropdown-item:hover {

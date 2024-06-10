@@ -8,6 +8,8 @@ import re
 import csv
 from collections import Counter
 
+from static.timer import measure_time
+
 
 def load_spacy_model(language_code):
     """
@@ -39,8 +41,13 @@ def preprocess_text(text):
     Returns:
         str: The preprocessed text.
     """
+
     # Replace newline characters with a space
     text = text.replace('\n', ' ')
+
+    # remove commas - TODO new, check if it is necessary
+    text = text.replace(',', '')
+    text = text.replace('.', '')
 
     # Remove references like [1], [2-4], [5,6], etc.
     text = re.sub(r'\[\d+–\d+\]|\[\d+(,\d+)*\]', '', text)
@@ -63,6 +70,7 @@ def preprocess_text(text):
     return text
 
 
+@measure_time
 def read_text_from_file(file_path):
     """
     Reads text from a file based on its file type.
