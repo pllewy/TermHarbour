@@ -75,6 +75,10 @@ def tag_terms(terms, input_text):
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
+
+    # batching_method - TEXT or PARAGRAPH
+    batching_method = 'TEXT'
+
     # Get files from web form
     if request.method == 'POST':
         source_lang = 'english'
@@ -97,10 +101,6 @@ def upload_file():
         source_text = read_text_from_file(source_file_path)
         target_text = read_text_from_file(target_file_path)
 
-        # Create text batches for faster simalign
-        # returns list of words (for closer paragraph matching)
-        source_batches, target_batches = create_text_batches(source_text, target_text)
-
         # Extract GLOBAL terms from text
         source_terms = extract_terms(source_text, source_lang)
         target_terms = extract_terms(target_text, target_lang)
@@ -108,21 +108,29 @@ def upload_file():
         print("SOURCE TERMS:", len(source_terms))
         print("TARGET TERMS:", len(target_terms))
 
-
         result_term_list = []
 
-        # Align terms
-        all_alignments = []
-        # FOR FUTURE DEVELOPMENT
-        no_batches_diff = abs(len(source_batches) - len(target_batches))
+        source_batches = []
+        target_batches = []
+        if batching_method == 'PARAGRAPH':
+            # Create text batches for faster simalign
+            # returns list of words (for closer paragraph matching)
+            source_batches, target_batches = create_text_batches(source_text, target_text)
 
-        # for i in range(min(len(source_batches), len(target_batches))):
-        for i in range(1):
+            no_batches_diff = abs(len(source_batches) - len(target_batches))
 
-            # curr_src_batch = source_batches[i]
-            # curr_tgt_batch = target_batches[i]
-            curr_src_batch = preprocess_text(source_text).split(' ')
-            curr_tgt_batch = preprocess_text(target_text).split(' ')
+            iterator = min(len(source_batches), len(target_batches))
+        else:
+            iterator = 1
+
+        for i in range(iterator):
+
+            if batching_method == 'PARAGRAPH':
+                curr_src_batch = source_batches[i]
+                curr_tgt_batch = target_batches[i]
+            else:
+                curr_src_batch = preprocess_text(source_text).split(' ')
+                curr_tgt_batch = preprocess_text(target_text).split(' ')
 
             print("\nLIST LENGTHS: ", len(curr_src_batch), len(curr_tgt_batch))
             alignment = align(curr_src_batch, curr_tgt_batch)
