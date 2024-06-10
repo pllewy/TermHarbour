@@ -214,18 +214,40 @@ def add_to_glossary():
         polish = translation['polish']
         categories = translation['categories']
 
-        existing_record = db.session.query(Glossary).filter_by(english=english).first()
+        # Check if the table exists
+        table_exists = db.session.execute(text(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{category}'")).fetchone()
+        if not table_exists:
+            # Create the table dynamically if it does not exist
+            db.session.execute(text(f"""
+                CREATE TABLE {category} (
+                    english TEXT PRIMARY KEY,
+                    spanish TEXT,
+                    polish TEXT,
+                    categories TEXT
+                )
+            """))
+
+        existing_record = db.session.execute(text(f"SELECT * FROM {category} WHERE english = :english"), {'english': english}).fetchone()
         if existing_record:
-            if spanish and (not existing_record.spanish or existing_record.spanish != spanish):
-                existing_record.spanish = f"{existing_record.spanish}, {spanish}" if existing_record.spanish else spanish
-            if polish and (not existing_record.polish or existing_record.polish != polish):
-                existing_record.polish = f"{existing_record.polish}, {polish}" if existing_record.polish else polish
-            if categories and (not existing_record.categories or existing_record.categories != categories):
-                existing_record.categories = f"{existing_record.categories}, {categories}" if existing_record.categories else categories
+            update_query = f"UPDATE {category} SET "
+            update_params = {}
+            if spanish and (not existing_record['spanish'] or existing_record['spanish'] != spanish):
+                update_query += "spanish = :spanish, "
+                update_params['spanish'] = f"{existing_record['spanish']}, {spanish}" if existing_record['spanish'] else spanish
+            if polish and (not existing_record['polish'] or existing_record['polish'] != polish):
+                update_query += "polish = :polish, "
+                update_params['polish'] = f"{existing_record['polish']}, {polish}" if existing_record['polish'] else polish
+            if categories and (not existing_record['categories'] or existing_record['categories'] != categories):
+                update_query += "categories = :categories, "
+                update_params['categories'] = f"{existing_record['categories']}, {categories}" if existing_record['categories'] else categories
+            update_query = update_query.rstrip(', ') + " WHERE english = :english"
+            update_params['english'] = english
+            db.session.execute(text(update_query), update_params)
         else:
-            new_record = Glossary(english=english, spanish=spanish, polish=polish, categories=categories)
-            new_record.__tablename__ = category
-            db.session.add(new_record)
+            db.session.execute(text(f"""
+                INSERT INTO {category} (english, spanish, polish, categories)
+                VALUES (:english, :spanish, :polish, :categories)
+            """), {'english': english, 'spanish': spanish, 'polish': polish, 'categories': categories})
 
     db.session.commit()
     return jsonify({'message': 'Translations added successfully'}), 200
