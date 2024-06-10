@@ -6,14 +6,14 @@ from static.timer import measure_time
 
 
 @measure_time
-def align(source_sentence, target_sentence, alignment_method="inter", print_output=False, print_input=False):
+def align(source_sentence, target_sentence, alignment_method="mwmf", print_output=False, print_input=False):
     """
     This function aligns a source sentence with a target sentence using a specified alignment method.
 
     Args:
         source_sentence (list): The source sentence to be aligned.
         target_sentence (list): The target sentence to be aligned.
-        alignment_method (str, optional): The alignment method to be used. Defaults to "itermax".
+        alignment_method (str, optional): The alignment method to be used. Defaults to "itermax". Options: "mwmf", "inter", "itermax".
         print_output (bool, optional): If True, prints the full alignment dictionary. Defaults to False.
         print_input (bool, optional): If True, prints the source and target sentences. Defaults to False.
 

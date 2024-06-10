@@ -75,6 +75,10 @@ def tag_terms(terms, input_text):
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
+
+    # batching_method - TEXT or PARAGRAPH
+    batching_method = 'TEXT'
+
     # Get files from web form
     if request.method == 'POST':
         source_lang = 'english'
@@ -97,10 +101,6 @@ def upload_file():
         source_text = read_text_from_file(source_file_path)
         target_text = read_text_from_file(target_file_path)
 
-        # Create text batches for faster simalign
-        # returns list of words (for closer paragraph matching)
-        source_batches, target_batches = create_text_batches(source_text, target_text)
-
         # Extract GLOBAL terms from text
         source_terms = extract_terms(source_text, source_lang)
         target_terms = extract_terms(target_text, target_lang)
@@ -108,17 +108,29 @@ def upload_file():
         print("SOURCE TERMS:", len(source_terms))
         print("TARGET TERMS:", len(target_terms))
 
-
         result_term_list = []
 
-        # Align terms
-        all_alignments = []
-        # FOR FUTURE DEVELOPMENT
-        no_batches_diff = abs(len(source_batches) - len(target_batches))
+        source_batches = []
+        target_batches = []
+        if batching_method == 'PARAGRAPH':
+            # Create text batches for faster simalign
+            # returns list of words (for closer paragraph matching)
+            source_batches, target_batches = create_text_batches(source_text, target_text)
 
-        for i in range(min(len(source_batches), len(target_batches))):
-            curr_src_batch = source_batches[i]
-            curr_tgt_batch = target_batches[i]
+            no_batches_diff = abs(len(source_batches) - len(target_batches))
+
+            iterator = min(len(source_batches), len(target_batches))
+        else:
+            iterator = 1
+
+        for i in range(iterator):
+
+            if batching_method == 'PARAGRAPH':
+                curr_src_batch = source_batches[i]
+                curr_tgt_batch = target_batches[i]
+            else:
+                curr_src_batch = preprocess_text(source_text).split(' ')
+                curr_tgt_batch = preprocess_text(target_text).split(' ')
 
             print("\nLIST LENGTHS: ", len(curr_src_batch), len(curr_tgt_batch))
             alignment = align(curr_src_batch, curr_tgt_batch)
@@ -165,11 +177,16 @@ def upload_file():
                         match_scores.append(match_count)
                     print("MATCH SCORES: ", little_term, " ", match_scores)
 
+                    for i in range(len(match_scores)):
+                        if match_scores[i] > 0:
+                            match_scores[i] = 1
                     match_result = [x + y for x, y in zip(match_result, match_scores)]
 
                 terms_result = []
+                # Take each target term that has more than half of the words matched
                 for k in range(len(tgt_little_terms)):
-                    if len(tgt_little_terms[k]) // 2 < match_result[k]:
+                    # Another possible condition <= len(tgt_little_terms[k])
+                    if match_result[k] > len(tgt_little_terms[k]) // 2:
                         terms_result.append(tgt_little_terms[k])
 
                 if len(terms_result) > 0:
@@ -187,6 +204,15 @@ def upload_file():
                     result_term_list[j][1] = []
 
         result_term_list = [term for term in result_term_list if term[1]]
+
+        for line in range(len(result_term_list)):
+            result_set = []
+            for sublist_index in range(len(result_term_list[line][1])):
+                term = ""
+                for word in range(len(result_term_list[line][1][sublist_index])):
+                    term = term + result_term_list[line][1][sublist_index][word] + " "
+                result_set.append(term)
+            result_term_list[line] = [result_term_list[line][0], list(set(result_set))]
 
         print("RESULT TERM LIST without duplicates: ", len(result_term_list))
 
