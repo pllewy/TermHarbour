@@ -11,7 +11,7 @@ def write_batches_to_file_as_list(batches, file_path):
 
 
 @measure_time
-def create_text_batches(raw_src_text, raw_tgt_text):
+def create_text_batches(raw_src_text, raw_tgt_text, save_to_file=False):
     src_batches = raw_src_text.split('.\n')
     tgt_batches = raw_tgt_text.split('.\n')
 
@@ -93,8 +93,9 @@ def create_text_batches(raw_src_text, raw_tgt_text):
     print(sum(new_tgt_batches_len), len(new_tgt_batches), new_tgt_batches_len)
     print("\n\n")
 
-    print("SAVE TO FILE")
-    write_batches_to_file_as_list(new_src_batches, "src_batches.txt")
-    write_batches_to_file_as_list(new_tgt_batches, "tgt_batches.txt")
+    if save_to_file:
+        print("SAVE TO FILE")
+        write_batches_to_file_as_list(new_src_batches, "src_batches.txt")
+        write_batches_to_file_as_list(new_tgt_batches, "tgt_batches.txt")
 
     return new_src_batches, new_tgt_batches

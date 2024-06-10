@@ -98,9 +98,10 @@ def upload_file():
         target_text = read_text_from_file(target_file_path)
 
         # Create text batches for faster simalign
+        # returns list of words (for closer paragraph matching)
         source_batches, target_batches = create_text_batches(source_text, target_text)
 
-        # Extract terms from text
+        # Extract GLOBAL terms from text
         source_terms = extract_terms(source_text, source_lang)
         target_terms = extract_terms(target_text, target_lang)
 
@@ -114,22 +115,31 @@ def upload_file():
         for i in range(min(len(source_batches), len(target_batches))):
             curr_src_batch = source_batches[i]
             curr_tgt_batch = target_batches[i]
+
             print("LIST LENGTHS: ", len(curr_src_batch), len(curr_tgt_batch))
-            alignment = align(curr_src_batch, curr_tgt_batch, print_output=True)
+            alignment = align(curr_src_batch, curr_tgt_batch)
+
+            source_batch_terms = extract_terms(' '.join(curr_src_batch), source_lang, preprocessing=False)
+            target_batch_terms = extract_terms(' '.join(curr_tgt_batch), target_lang, preprocessing=False)
+
+            print("SOURCE BATCH TERMS BY SEBA: ", len(source_batch_terms), source_batch_terms)
+            print("TARGET BATCH TERMS BY SEBA: ", len(target_batch_terms), target_batch_terms)
+
+            print("ALIGNMENT: ", len(alignment), alignment)
 
             for c in range(len(alignment)):
                 all_alignments.append(alignment[c])
 
         print("HERE ARE ALL ALIGNMENTS")
-        print(all_alignments)
+        print(len(all_alignments), all_alignments)
 
         # for align in all_alignments:
         #     if align
 
         final_word_pairs = []
 
-        print("HERE IS THE ALIGNMENT:")
-        print(len(all_alignments))
+        # print("HERE IS THE ALIGNMENT:")
+        # print(len(all_alignments))
 
         terms_dict = {
             'alignment': all_alignments,
@@ -171,9 +181,12 @@ def add_to_glossary():
 
 
 @measure_time
-def extract_terms(input_text, lang):
+def extract_terms(input_text, lang, preprocessing=True):
     nlp = load_spacy_model(lang)
-    text_preprocessed = preprocess_text(input_text)
+    if preprocessing:
+        text_preprocessed = preprocess_text(input_text)
+    else:
+        text_preprocessed = input_text
     terms_ner = extract_ner_terms(input_text, nlp)
     terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
     terms_pattern = post_process_terms(terms_pattern)
