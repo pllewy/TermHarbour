@@ -93,10 +93,16 @@ def upload_file():
         source_file_path = save_file(source_file)
         target_file_path = save_file(target_file)
 
-        # Read text from files
-        source_text = read_text_from_file(source_file_path)
-        target_text = read_text_from_file(target_file_path)
+        try:
+            source_text = read_text_from_file(source_file_path)
+        except ValueError as e:
+            return jsonify({'error': f'Error reading source file: {str(e)}'}), 400
 
+        try:
+            target_text = read_text_from_file(target_file_path)
+        except ValueError as e:
+            return jsonify({'error': f'Error reading target file: {str(e)}'}), 400
+        
         # Create text batches for faster simalign
         # returns list of words (for closer paragraph matching)
         source_batches, target_batches = create_text_batches(source_text, target_text)

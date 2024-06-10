@@ -103,7 +103,7 @@ def read_text_from_file(file_path):
                 text += row[0] + ' '  # assuming the text is in the first column
             return text
     else:
-        raise ValueError("Unsupported file format")
+        raise ValueError("Unsupported file format \nOnly .txt, .pdf, and .csv files are supported")
 
 
 def lemmatize_terms(terms, nlp):
