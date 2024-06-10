@@ -59,6 +59,7 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
             const alignments = resp['alignment'];
             const categories = resp['categories'];
 
+            console.log(alignments)
             // Get the table body
             const tableBody = document.getElementById('translationsTableBody');
             tableBody.innerHTML = ''; // Clear existing rows
@@ -68,10 +69,10 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
                 const row = document.createElement('tr');
                 if (language === 'spanish') {
                     row.innerHTML = `
-                        <td>${alignments[i][0]}</td>
-                        <td>${alignments[i][1]}</td>
+                        <td>${alignments[i][0].replace(/_/g, ' ')}</td>
+                        <td>${alignments[i][1].join(', ')}</td>
                         <td></td>
-                        <td class="categories-column" title="${categories}">${categories}</td>
+                        <td class="categories-column" title="${categories}">${categories.join(', ')}</td>
                         <td>
                             <button class="btn btn-secondary" onclick="editRow(this)">Edit</button>
                             <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
@@ -79,10 +80,10 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
                     `;
                 } else if (language === 'polish') {
                     row.innerHTML = `
-                        <td>${alignments[i][0]}</td>
+                        <td>${alignments[i][0].replace(/_/g, ' ')}</td>
                         <td></td>
-                        <td>${alignments[i][1]}</td>
-                        <td class="categories-column" title="${categories}">${categories}</td>
+                        <td>${alignments[i][1].join(', ')}</td>
+                        <td class="categories-column" title="${categories}">${categories.join(', ')}</td>
                         <td>
                             <button class="btn btn-secondary" onclick="editRow(this)">Edit</button>
                             <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
