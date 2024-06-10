@@ -75,7 +75,6 @@ def tag_terms(terms, input_text):
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-
     # batching_method - TEXT or PARAGRAPH
     batching_method = 'TEXT'
 
@@ -106,10 +105,7 @@ def upload_file():
             target_text = read_text_from_file(target_file_path)
         except ValueError as e:
             return jsonify({'error': f'Error reading target file: {str(e)}'}), 400
-        
-        # Create text batches for faster simalign
-        # returns list of words (for closer paragraph matching)
-        source_batches, target_batches = create_text_batches(source_text, target_text)
+
 
         # Extract GLOBAL terms from text
         source_terms = extract_terms(source_text, source_lang)
@@ -123,10 +119,11 @@ def upload_file():
         source_batches = []
         target_batches = []
         if batching_method == 'PARAGRAPH':
-            # Create text batches for faster simalign
+            # Create text batches for possibly faster simalign
             # returns list of words (for closer paragraph matching)
             source_batches, target_batches = create_text_batches(source_text, target_text)
 
+            # check difference in number of batches. You need it to ensure you check adjacent batches in both languages
             no_batches_diff = abs(len(source_batches) - len(target_batches))
 
             iterator = min(len(source_batches), len(target_batches))
@@ -185,7 +182,7 @@ def upload_file():
                     for tgt_term in tgt_little_terms:
                         match_count = sum(1 for word in tgt_term if word in matching_tuples)
                         match_scores.append(match_count)
-                    print("MATCH SCORES: ", little_term, " ", match_scores)
+                    # print("MATCH SCORES: ", little_term, " ", match_scores)
 
                     for i in range(len(match_scores)):
                         if match_scores[i] > 0:
@@ -196,12 +193,14 @@ def upload_file():
                 # Take each target term that has more than half of the words matched
                 for k in range(len(tgt_little_terms)):
                     # Another possible condition <= len(tgt_little_terms[k])
-                    if match_result[k] > len(tgt_little_terms[k]) // 2:
+                    if ((match_result[k] > (len(tgt_little_terms[k]) // 2)) &
+                            (len(tgt_little_terms[k]) >= len(src_little_terms) // 2) &
+                            (len(tgt_little_terms[k]) <= len(src_little_terms))):
                         terms_result.append(tgt_little_terms[k])
 
                 if len(terms_result) > 0:
                     result_term_list.append([term, terms_result])
-                print("MATCH RESULT: ", term, " ", match_result, " ", terms_result)
+                # print("MATCH RESULT: ", term, " ", match_result, " ", terms_result)
 
                 print("RESULT TERM LIST: ", len(result_term_list))
 
@@ -226,7 +225,7 @@ def upload_file():
 
         print("RESULT TERM LIST without duplicates: ", len(result_term_list))
 
-        print("\n\nRESULT TERM LIST: ", result_term_list)
+        # print("\n\nRESULT TERM LIST: ", result_term_list)
 
         terms_dict = {
             'alignment': result_term_list,
@@ -282,7 +281,6 @@ def add_to_glossary():
 
     db.session.commit()
     return jsonify({'message': 'Translations added successfully'}), 200
-
 
 @measure_time
 def extract_terms(input_text, lang, preprocessing=True):
