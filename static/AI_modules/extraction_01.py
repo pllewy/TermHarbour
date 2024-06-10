@@ -219,5 +219,5 @@ def post_process_terms(terms):
         list: The post-processed list of terms.
     """
     term_counts = Counter(terms)
-    processed_terms = [term for term in term_counts if term_counts[term] > 1 and not re.match(r'^\d+[a-z]*$', term)]
+    processed_terms = [term for term in term_counts if term_counts[term] > 0 and not re.match(r'^\d+[a-z]*$', term)]
     return processed_terms

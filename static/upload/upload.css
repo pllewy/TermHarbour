@@ -113,10 +113,17 @@
     color: white; /* White text on hover */
 }
 
+/*table th, table td {*/
+/*    white-space: nowrap;*/
+/*    overflow: hidden;*/
+/*    text-overflow: ellipsis;*/
+/*}*/
+
 table th, table td {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal; /* Allow text wrapping /
+    word-wrap: break-word; / Break words that are too long /
+    overflow: hidden; / Hide overflow /
+    text-overflow: ellipsis; / Add ellipsis for overflow text */
 }
 
 table td.categories-column {
