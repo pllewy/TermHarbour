@@ -55,6 +55,10 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
         })
         .then(response => response.json())
         .then(resp => {
+          if (resp.error) {
+            alert(`Error: ${resp.error}`);
+            return;
+          }
             // Get the alignments and categories from the response
             const alignments = resp['alignment'];
             const categories = resp['categories'];
@@ -98,6 +102,7 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
       .catch((error) => {
         // Log any errors
         console.error("Error:", error);
+        alert("An error occurred while uploading the files.");
         // Optionally, display an error message to the user
       })
       .finally(() => {
@@ -261,6 +266,7 @@ function addToGlossary() {
     location.reload(); // Reset the page
   })
   .catch((error) => {
-    console.error('Error:', error);
+    console.error("Error:", error);
+    alert(`An error occurred: ${error.message}`);
   });
 }
