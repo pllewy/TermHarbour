@@ -15,9 +15,9 @@ def create_text_batches(raw_src_text, raw_tgt_text, save_to_file=False):
     src_batches = raw_src_text.split('.\n')
     tgt_batches = raw_tgt_text.split('.\n')
 
-    print("\n\nTEXT LENGTHS")
-    print(len(raw_src_text))
-    print(len(raw_tgt_text))
+    # print("\n\nTEXT LENGTHS")
+    # print(len(raw_src_text))
+    # print(len(raw_tgt_text))
 
     for i in range(len(src_batches)):
         src_batches[i] = preprocess_text(src_batches[i])
@@ -47,21 +47,21 @@ def create_text_batches(raw_src_text, raw_tgt_text, save_to_file=False):
     del tgt_batches[0]
 
     while len(src_batches) > 0 and len(tgt_batches) > 0:
-        # PRINTER
-        src_batches_len = [len(batch) for batch in src_batches]
-        tgt_batches_len = [len(batch) for batch in tgt_batches]
-        new_src_batches_len = [len(batch) for batch in new_src_batches]
-        new_tgt_batches_len = [len(batch) for batch in new_tgt_batches]
+        # # PRINTER
+        # src_batches_len = [len(batch) for batch in src_batches]
+        # tgt_batches_len = [len(batch) for batch in tgt_batches]
+        # new_src_batches_len = [len(batch) for batch in new_src_batches]
+        # new_tgt_batches_len = [len(batch) for batch in new_tgt_batches]
 
-        print("\nHERE ARE BATCHES in while loop")
-        print("old src: ", sum(src_batches_len), len(src_batches), src_batches_len)
-        print("old tgt: ", sum(tgt_batches_len), len(tgt_batches), tgt_batches_len)
-        print("new src: ", sum(new_src_batches_len), len(new_src_batches), new_src_batches_len)
-        print("new tgt: ", sum(new_tgt_batches_len), len(new_tgt_batches), new_tgt_batches_len)
+        # print("\nHERE ARE BATCHES in while loop")
+        # print("old src: ", sum(src_batches_len), len(src_batches), src_batches_len)
+        # print("old tgt: ", sum(tgt_batches_len), len(tgt_batches), tgt_batches_len)
+        # print("new src: ", sum(new_src_batches_len), len(new_src_batches), new_src_batches_len)
+        # print("new tgt: ", sum(new_tgt_batches_len), len(new_tgt_batches), new_tgt_batches_len)
         # END PRINTER
 
         if len(new_src_batches[i]) > len(new_tgt_batches[j]) + 0.3 * len(new_tgt_batches[j]):
-            print("MERGING TGT")
+            # print("MERGING TGT")
             new_tgt_batches[j] = new_tgt_batches[j] + tgt_batches[0]
             del tgt_batches[0]
         else:
@@ -75,9 +75,9 @@ def create_text_batches(raw_src_text, raw_tgt_text, save_to_file=False):
     new_src_batches_len = [len(batch) for batch in new_src_batches]
     new_tgt_batches_len = [len(batch) for batch in new_tgt_batches]
 
-    print("\nHERE ARE NEWER BATCHES")
-    print(sum(new_src_batches_len), len(new_src_batches), new_src_batches_len)
-    print(sum(new_tgt_batches_len), len(new_tgt_batches), new_tgt_batches_len)
+    # print("\nHERE ARE NEWER BATCHES")
+    # print(sum(new_src_batches_len), len(new_src_batches), new_src_batches_len)
+    # print(sum(new_tgt_batches_len), len(new_tgt_batches), new_tgt_batches_len)
 
     for i in range(len(src_batches)):
         new_src_batches.append(src_batches[i])
@@ -91,7 +91,6 @@ def create_text_batches(raw_src_text, raw_tgt_text, save_to_file=False):
     print("\nHERE ARE NEW BATCHES")
     print(sum(new_src_batches_len), len(new_src_batches), new_src_batches_len)
     print(sum(new_tgt_batches_len), len(new_tgt_batches), new_tgt_batches_len)
-    print("\n\n")
 
     if save_to_file:
         print("SAVE TO FILE")

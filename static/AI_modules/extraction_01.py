@@ -45,9 +45,9 @@ def preprocess_text(text):
     # Replace newline characters with a space
     text = text.replace('\n', ' ')
 
-    # remove commas - TODO new, check if it is necessary
-    text = text.replace(',', '')
-    text = text.replace('.', '')
+    # # remove commas - TODO new, check if it is necessary
+    # text = text.replace(',', '')
+    # text = text.replace('.', '')
 
     # Remove references like [1], [2-4], [5,6], etc.
     text = re.sub(r'\[\d+–\d+\]|\[\d+(,\d+)*\]', '', text)
@@ -161,7 +161,9 @@ def extract_specialist_terms_with_patterns(text, nlp):
 
         for match_id, start, end in matches:
             span = doc[start:end]
-            term = ' '.join([token.lemma_ for token in span]).lower()
+            term = ' '.join([token.text for token in span]).lower()
+            # part_of_speech = ' '.join([token.pos_ for token in span])
+            # print(term, part_of_speech)
             specialist_terms.append(term.replace(' ', '_'))
 
     return specialist_terms

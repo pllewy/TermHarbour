@@ -40,7 +40,7 @@ function uploadFile(sourceElementId = "fileInput", targetElementId = "targetFile
     const formData = new FormData();
 
     // Append the language, domain, source file, and target file to the FormData object
-    formData.append("language", 'english')
+    formData.append("language", language)
     formData.append("domain", domain)
     formData.append("file", source_file);
     formData.append("target_file", target_file);

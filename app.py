@@ -108,15 +108,19 @@ def upload_file():
         print("SOURCE TERMS:", len(source_terms))
         print("TARGET TERMS:", len(target_terms))
 
+
+        result_term_list = []
+
         # Align terms
         all_alignments = []
+        # FOR FUTURE DEVELOPMENT
         no_batches_diff = abs(len(source_batches) - len(target_batches))
 
         for i in range(min(len(source_batches), len(target_batches))):
             curr_src_batch = source_batches[i]
             curr_tgt_batch = target_batches[i]
 
-            print("LIST LENGTHS: ", len(curr_src_batch), len(curr_tgt_batch))
+            print("\nLIST LENGTHS: ", len(curr_src_batch), len(curr_tgt_batch))
             alignment = align(curr_src_batch, curr_tgt_batch)
 
             source_batch_terms = extract_terms(' '.join(curr_src_batch), source_lang, preprocessing=False)
@@ -127,22 +131,69 @@ def upload_file():
 
             print("ALIGNMENT: ", len(alignment), alignment)
 
-            for c in range(len(alignment)):
-                all_alignments.append(alignment[c])
+            tgt_little_terms = []
+            # For each multi-word term in target batch
+            for term in target_batch_terms:
+                # Split it into words
+                tgt_little_terms.append(term.split('_'))
 
-        print("HERE ARE ALL ALIGNMENTS")
-        print(len(all_alignments), all_alignments)
+            print("\nTARGET LITTLE TERMS: ", tgt_little_terms)
 
-        # for align in all_alignments:
-        #     if align
+            # For each multi-word term in source batch
+            for term in source_batch_terms:
+                # Split it into words
+                src_little_terms = term.split('_')
 
-        final_word_pairs = []
+                print("\nSOURCE LITTLE TERMS: ", src_little_terms)
+                match_result = []
+                for l in range(len(tgt_little_terms)):
+                    match_result.append(0)
 
-        # print("HERE IS THE ALIGNMENT:")
-        # print(len(all_alignments))
+                # For each word in source term
+                for little_term in src_little_terms:
+                    # Get all alignments of this word
+                    matching_tuples = [t[1] for t in alignment if t[0].lower() == little_term.lower()]
+                    # Remove duplicates
+                    matching_tuples = list(set(matching_tuples))
+                    print("MATCHING TUPLES: ", little_term, " ", matching_tuples)
+
+                    # Count matching words in tgt_little_terms
+                    match_scores = []
+
+                    for tgt_term in tgt_little_terms:
+                        match_count = sum(1 for word in tgt_term if word in matching_tuples)
+                        match_scores.append(match_count)
+                    print("MATCH SCORES: ", little_term, " ", match_scores)
+
+                    match_result = [x + y for x, y in zip(match_result, match_scores)]
+
+                terms_result = []
+                for k in range(len(tgt_little_terms)):
+                    if len(tgt_little_terms[k]) // 2 < match_result[k]:
+                        terms_result.append(tgt_little_terms[k])
+
+                if len(terms_result) > 0:
+                    result_term_list.append([term, terms_result])
+                print("MATCH RESULT: ", term, " ", match_result, " ", terms_result)
+
+                print("RESULT TERM LIST: ", len(result_term_list))
+
+        print("RESULT TERM LIST with duplicates: ", len(result_term_list))
+
+        for i in range(len(result_term_list)):
+            for j in range(i + 1, len(result_term_list)):
+                if result_term_list[i][0] == result_term_list[j][0]:
+                    result_term_list[i][1] += result_term_list[j][1]
+                    result_term_list[j][1] = []
+
+        result_term_list = [term for term in result_term_list if term[1]]
+
+        print("RESULT TERM LIST without duplicates: ", len(result_term_list))
+
+        print("\n\nRESULT TERM LIST: ", result_term_list)
 
         terms_dict = {
-            'alignment': all_alignments,
+            'alignment': result_term_list,
             'categories': text_categorization(domain, source_lang, source_text)
         }
 

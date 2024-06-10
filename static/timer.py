@@ -6,7 +6,7 @@ def measure_time(func):
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
-        execution_time = end_time - start_time
+        execution_time = round(end_time - start_time, 4)
         print(f"Function '{func.__name__}' execution time: {execution_time} seconds")
         return result
 
