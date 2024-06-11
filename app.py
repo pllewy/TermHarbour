@@ -4,9 +4,8 @@ from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
-from static.AI_modules.alignment import align, align_sentences
-from static.text_batches import create_text_batches
-from static.timer import measure_time
+from static.AI_modules.alignment import align, full_alignment_process
+
 from static.upload.upload import save_file
 from static.AI_modules.extraction_01 import (read_text_from_file, post_process_terms, preprocess_text, load_spacy_model,
                                              extract_specialist_terms_with_patterns, combine_term_lists,
@@ -35,42 +34,72 @@ class Glossary(db.Model):
 @app.route('/', methods=['GET', 'POST'])
 def main_page():
     if request.method == 'POST':
-        source_text = request.form['source_text'].split()
-        target_text = request.form['target_text'].split()
+        source_text = request.form['source_text']
+        target_text = request.form['target_text']
         source_language = request.form['source_language']
         target_language = request.form['target_language']
 
-        aligned = align_sentences(source_text, target_text)
+        source_text_words = preprocess_text(source_text).split(' ')
+        target_text_words = preprocess_text(target_text).split(' ')
 
-        for pair in aligned['mwmf']:
-            source_text[pair[0]] = f'<span style="color: green;">{source_text[pair[0]]}</span>'
-            target_text[pair[1]] = f'<span style="color: green;">{target_text[pair[1]]}</span>'
+        print(source_text_words)
+        print(source_text_words)
 
-        source_terms = extract_terms(request.form['source_text'], source_language)
-        target_terms = extract_terms(request.form['target_text'], target_language)
+        result_term_list, source_terms, target_terms = full_alignment_process(source_text, target_text, source_language, target_language)
 
-        tag_terms(source_terms, source_text)
-        tag_terms(target_terms, target_text)
+        for term in result_term_list:
+            for i in range(len(term[1])):
+                if term[1][i][-1] == ' ':
+                    term[1][i] = term[1][i][:-1]
+
+        # words_set is in form [english, [target1, target2, ...]]
+
+        for i in range(len(source_text_words)):
+            if source_text_words[i] in source_terms:
+                print("FOUND A TERM IN SOURCE TEXT", source_text_words[i])
+                term_flag = False
+                for term in result_term_list:
+                    if term[0] == source_text_words[i]:
+                        # blue
+                        source_text_words[i] = f'<span style="color: #0353A4;">{source_text_words[i]}</span>'
+                        term_flag = True
+                        break
+                if not term_flag:
+                    # red 96031A
+                    source_text_words[i] = f'<span style="color: #BF0603; font-size: 20px;">{source_text_words[i]}</span>'
+
+        for i in range(len(target_text_words)):
+            if target_text_words[i] in target_terms:
+                print("FOUND A TERM IN TARGET TEXT", target_text_words[i])
+                term_flag = False
+                for term in result_term_list:
+                    if target_text_words[i] in term[1]:
+                        # blue
+                        target_text_words[i] = f'<span style="color: #0353A4;">{target_text_words[i]}</span>'
+                        term_flag = True
+                        break
+                if not term_flag:
+                    # gold E8C547
+                    target_text_words[i] = f'<span style="color: #FAA916; font-size: 20px;">{target_text_words[i]}</span>'
+
+
+        print("\n\n", result_term_list)
+        print("SOURCE TEXT: ", source_text_words)
+        print("TARGET TEXT: ", target_text_words)
 
         response_dict = {
             'source_language': source_language,
-            'source_text': source_text,
+            'source_text': source_text_words,
             'target_language': target_language,
-            'target_text': target_text,
+            'target_text': target_text_words,
         }
 
+        print("DONE")
         return response_dict, 200
     else:
         return render_template('main_page.html',
                                source_text="", source_language="en",
-                               target_text="", target_language="es")
-
-
-def tag_terms(terms, input_text):
-    for word in terms:
-        if f'<span style="color: green;">{word}</span>' not in input_text:
-            input_text.append(f'<span style="color: red;">{word}</span>')
-    input_text.append('<br>')
+                               target_text="", target_language="pl")
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -106,126 +135,7 @@ def upload_file():
         except ValueError as e:
             return jsonify({'error': f'Error reading target file: {str(e)}'}), 400
 
-
-        # Extract GLOBAL terms from text
-        source_terms = extract_terms(source_text, source_lang)
-        target_terms = extract_terms(target_text, target_lang)
-
-        print("SOURCE TERMS:", len(source_terms))
-        print("TARGET TERMS:", len(target_terms))
-
-        result_term_list = []
-
-        source_batches = []
-        target_batches = []
-        if batching_method == 'PARAGRAPH':
-            # Create text batches for possibly faster simalign
-            # returns list of words (for closer paragraph matching)
-            source_batches, target_batches = create_text_batches(source_text, target_text)
-
-            # check difference in number of batches. You need it to ensure you check adjacent batches in both languages
-            no_batches_diff = abs(len(source_batches) - len(target_batches))
-
-            iterator = min(len(source_batches), len(target_batches))
-        else:
-            iterator = 1
-
-        for i in range(iterator):
-
-            if batching_method == 'PARAGRAPH':
-                curr_src_batch = source_batches[i]
-                curr_tgt_batch = target_batches[i]
-            else:
-                curr_src_batch = preprocess_text(source_text).split(' ')
-                curr_tgt_batch = preprocess_text(target_text).split(' ')
-
-            print("\nLIST LENGTHS: ", len(curr_src_batch), len(curr_tgt_batch))
-            alignment = align(curr_src_batch, curr_tgt_batch)
-
-            source_batch_terms = extract_terms(' '.join(curr_src_batch), source_lang, preprocessing=False)
-            target_batch_terms = extract_terms(' '.join(curr_tgt_batch), target_lang, preprocessing=False)
-
-            print("SOURCE BATCH TERMS BY SEBA: ", len(source_batch_terms), source_batch_terms)
-            print("TARGET BATCH TERMS BY SEBA: ", len(target_batch_terms), target_batch_terms)
-
-            print("ALIGNMENT: ", len(alignment), alignment)
-
-            tgt_little_terms = []
-            # For each multi-word term in target batch
-            for term in target_batch_terms:
-                # Split it into words
-                tgt_little_terms.append(term.split('_'))
-
-            print("\nTARGET LITTLE TERMS: ", tgt_little_terms)
-
-            # For each multi-word term in source batch
-            for term in source_batch_terms:
-                # Split it into words
-                src_little_terms = term.split('_')
-
-                print("\nSOURCE LITTLE TERMS: ", src_little_terms)
-                match_result = []
-                for l in range(len(tgt_little_terms)):
-                    match_result.append(0)
-
-                # For each word in source term
-                for little_term in src_little_terms:
-                    # Get all alignments of this word
-                    matching_tuples = [t[1] for t in alignment if t[0].lower() == little_term.lower()]
-                    # Remove duplicates
-                    matching_tuples = list(set(matching_tuples))
-                    print("MATCHING TUPLES: ", little_term, " ", matching_tuples)
-
-                    # Count matching words in tgt_little_terms
-                    match_scores = []
-
-                    for tgt_term in tgt_little_terms:
-                        match_count = sum(1 for word in tgt_term if word in matching_tuples)
-                        match_scores.append(match_count)
-                    # print("MATCH SCORES: ", little_term, " ", match_scores)
-
-                    for i in range(len(match_scores)):
-                        if match_scores[i] > 0:
-                            match_scores[i] = 1
-                    match_result = [x + y for x, y in zip(match_result, match_scores)]
-
-                terms_result = []
-                # Take each target term that has more than half of the words matched
-                for k in range(len(tgt_little_terms)):
-                    # Another possible condition <= len(tgt_little_terms[k])
-                    if ((match_result[k] > (len(tgt_little_terms[k]) // 2)) &
-                            (len(tgt_little_terms[k]) >= len(src_little_terms) // 2) &
-                            (len(tgt_little_terms[k]) <= len(src_little_terms))):
-                        terms_result.append(tgt_little_terms[k])
-
-                if len(terms_result) > 0:
-                    result_term_list.append([term, terms_result])
-                # print("MATCH RESULT: ", term, " ", match_result, " ", terms_result)
-
-                print("RESULT TERM LIST: ", len(result_term_list))
-
-        print("RESULT TERM LIST with duplicates: ", len(result_term_list))
-
-        for i in range(len(result_term_list)):
-            for j in range(i + 1, len(result_term_list)):
-                if result_term_list[i][0] == result_term_list[j][0]:
-                    result_term_list[i][1] += result_term_list[j][1]
-                    result_term_list[j][1] = []
-
-        result_term_list = [term for term in result_term_list if term[1]]
-
-        for line in range(len(result_term_list)):
-            result_set = []
-            for sublist_index in range(len(result_term_list[line][1])):
-                term = ""
-                for word in range(len(result_term_list[line][1][sublist_index])):
-                    term = term + result_term_list[line][1][sublist_index][word] + " "
-                result_set.append(term)
-            result_term_list[line] = [result_term_list[line][0], list(set(result_set))]
-
-        print("RESULT TERM LIST without duplicates: ", len(result_term_list))
-
-        # print("\n\nRESULT TERM LIST: ", result_term_list)
+        result_term_list, source_terms, target_terms = full_alignment_process(source_text, target_text, source_lang, target_lang, batching_method)
 
         terms_dict = {
             'alignment': result_term_list,
@@ -282,17 +192,7 @@ def add_to_glossary():
     db.session.commit()
     return jsonify({'message': 'Translations added successfully'}), 200
 
-@measure_time
-def extract_terms(input_text, lang, preprocessing=True):
-    nlp = load_spacy_model(lang)
-    if preprocessing:
-        text_preprocessed = preprocess_text(input_text)
-    else:
-        text_preprocessed = input_text
-    terms_ner = extract_ner_terms(input_text, nlp)
-    terms_pattern = extract_specialist_terms_with_patterns(text_preprocessed, nlp)
-    terms_pattern = post_process_terms(terms_pattern)
-    return combine_term_lists(terms_pattern, terms_ner)
+
 
 
 @app.route('/tables', methods=['GET'])
